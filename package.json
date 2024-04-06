@@ -1,7 +1,8 @@
 {
   "bin": {
-    "e-commerce": "bin/e-commerce.js"
+    "ecommerce": "bin/ecommerce.js"
   },
+  "description": "An e-commerce project used to explore event-based APIs and microservices.",
   "dependencies": {
     "@sindresorhus/is": "6.2.0",
     "aws-cdk-lib": "2.136.0",
@@ -33,7 +34,7 @@
     "typescript": "5.4.4",
     "vitest": "1.4.0"
   },
-  "name": "e-commerce",
+  "name": "ecommerce",
   "scripts": {
     "build": "npm test && tsc",
     "build:ci": "npm run clean && npm test && tsc",

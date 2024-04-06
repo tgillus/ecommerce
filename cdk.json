@@ -1,5 +1,5 @@
 {
-  "app": "npx tsx bin/e-commerce.ts",
+  "app": "npx tsx bin/ecommerce.ts",
   "watch": {
     "include": ["**"],
     "exclude": [
