@@ -12,8 +12,8 @@ import { Validator } from '../../../../../lib/lambda/products/application/operat
 
 const validator = td.object<Validator>();
 const handler = td.object<Handler>();
-const args = td.object<CreateArgs>();
 const params = td.object<RequestParams>();
+const args = td.object<CreateArgs>();
 
 const operation = new ValidOperation(validator, handler);
 
