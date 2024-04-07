@@ -3,6 +3,6 @@ import { CreateArgs } from '../args/create-args.js';
 import { Handler } from './handler.js';
 
 export class CreateHandler implements Handler {
-  handler = (args: CreateArgs): Effect.Effect<string, Error> =>
+  handle = (args: CreateArgs): Effect.Effect<string, Error> =>
     Effect.succeed('success');
 }

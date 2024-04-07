@@ -1,9 +1,9 @@
 import { Effect } from 'effect';
-import { Handler, HandlerResult } from './handler/handler.js';
+import { Handler } from './handler/handler.js';
 import { Validator } from './validation/validator.js';
 
 export interface Operation {
-  exec(data: unknown): Effect.Effect<HandlerResult, Error>;
+  exec(data: unknown): Effect.Effect<string, Error>;
 }
 
 export class ValidOperation implements Operation {
@@ -13,7 +13,7 @@ export class ValidOperation implements Operation {
   ) {}
 
   exec = (data: unknown) =>
-    Effect.map(this.validator.validate(data), this.handler.handler);
+    Effect.flatMap(this.validator.validate(data), this.handler.handle);
 }
 
 export class InvalidOperation implements Operation {
