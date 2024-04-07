@@ -1,10 +1,11 @@
 import { APIGatewayEvent } from 'aws-lambda';
+import { Option } from 'effect';
 
 export class RequestParams {
   constructor(private readonly event: Event) {}
 
   get body() {
-    return this.event.body ?? '';
+    return Option.getOrElse(Option.fromNullable(this.event.body), () => '');
   }
 
   get httpMethod() {

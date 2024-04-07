@@ -1,7 +1,7 @@
 import { APIGatewayEvent } from 'aws-lambda';
 import * as td from 'testdouble';
 import { expect, test } from 'vitest';
-import { handler } from '../../../lib/lambda/products/index.js';
+import { handler } from '../../../../lib/lambda/products/api/lambda.js';
 
 test('returns result', async () => {
   const event = td.object<APIGatewayEvent>();
