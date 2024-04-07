@@ -1,9 +1,10 @@
 import { Effect } from 'effect';
+import { RequestParams } from '../../../common/request/request-params.js';
 import { Handler } from './handler/handler.js';
 import { Validator } from './validation/validator.js';
 
 export interface Operation {
-  exec(data: unknown): Effect.Effect<string, Error>;
+  exec(params: RequestParams): Effect.Effect<void, Error>;
 }
 
 export class ValidOperation implements Operation {
@@ -12,8 +13,8 @@ export class ValidOperation implements Operation {
     private readonly handler: Handler
   ) {}
 
-  exec = (data: unknown) =>
-    Effect.flatMap(this.validator.validate(data), this.handler.handle);
+  exec = (params: RequestParams) =>
+    Effect.flatMap(this.validator.validate(params), this.handler.exec);
 }
 
 export class InvalidOperation implements Operation {
