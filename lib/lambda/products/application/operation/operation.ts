@@ -15,3 +15,7 @@ export class ValidOperation implements Operation {
   exec = (data: unknown) =>
     Effect.map(this.validator.validate(data), this.handler.handler);
 }
+
+export class InvalidOperation implements Operation {
+  exec = () => Effect.fail(new Error('invalid operation'));
+}
