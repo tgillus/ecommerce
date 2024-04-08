@@ -1,4 +1,5 @@
 *.d.ts
+.env
 coverage
 node_modules
 

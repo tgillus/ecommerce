@@ -6,5 +6,6 @@ export default defineConfig({
       include: ['lib/**/*.ts'],
       exclude: ['lib/vendor/**'],
     },
+    setupFiles: './test/setup.ts',
   },
 });
