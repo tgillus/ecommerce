@@ -5,18 +5,16 @@ import { ApiStack } from '../lib/api/api-stack.js';
 import { DynamoStack } from '../lib/dynamo/dynamo-stack.js';
 
 const app = new cdk.App();
+const env = {
+  account: process.env.CDK_DEFAULT_ACCOUNT,
+  region: process.env.CDK_DEFAULT_REGION,
+};
 
 const { productsTable } = new DynamoStack(app, 'EcommerceDynamoStack', {
-  env: {
-    account: process.env.CDK_DEFAULT_ACCOUNT,
-    region: process.env.CDK_DEFAULT_REGION,
-  },
+  env,
 });
 
 new ApiStack(app, 'EcommerceApiStack', {
-  env: {
-    account: process.env.CDK_DEFAULT_ACCOUNT,
-    region: process.env.CDK_DEFAULT_REGION,
-  },
+  env,
   productsTable,
 });
