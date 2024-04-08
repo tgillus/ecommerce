@@ -6,7 +6,7 @@ import { DynamoStack } from '../lib/dynamo/dynamo-stack.js';
 
 const app = new cdk.App();
 
-new DynamoStack(app, 'EcommerceDynamoStack', {
+const { productsTable } = new DynamoStack(app, 'EcommerceDynamoStack', {
   env: {
     account: process.env.CDK_DEFAULT_ACCOUNT,
     region: process.env.CDK_DEFAULT_REGION,
@@ -18,4 +18,5 @@ new ApiStack(app, 'EcommerceApiStack', {
     account: process.env.CDK_DEFAULT_ACCOUNT,
     region: process.env.CDK_DEFAULT_REGION,
   },
+  productsTable,
 });
