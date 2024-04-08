@@ -12,5 +12,5 @@ export class Package {
     return pkgDir;
   };
 
-  static build = () => new Package(new Assert());
+  static rootDir = () => new Package(new Assert()).rootDir();
 }
