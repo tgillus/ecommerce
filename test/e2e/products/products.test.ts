@@ -1,5 +1,9 @@
-import { spec } from 'pactum';
+import { request, spec } from 'pactum';
 import { describe, test } from 'vitest';
+
+request.setBaseUrl(
+  `https://${process.env.AWS_API_GATEWAY_ID}.execute-api.${process.env.AWS_API_GATEWAY_REGION}.amazonaws.com/prod`
+);
 
 describe('POST /products', () => {
   test('saves new products', async () => {
