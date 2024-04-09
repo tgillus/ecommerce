@@ -5,6 +5,7 @@ import { RequestParams } from '../../../../../lib/lambda/common/request/request-
 import { Api } from '../../../../../lib/lambda/products/api/api.js';
 import { handler } from '../../../../../lib/lambda/products/api/lambda.js';
 import { OpFactory } from '../../../../../lib/lambda/products/application/operation/op-factory.js';
+import { Config } from '../../../../../lib/lambda/products/infrastructure/config/config.js';
 
 const api = td.object<Api>();
 const event = td.object<APIGatewayEvent>();
@@ -20,7 +21,7 @@ beforeAll(() => {
 });
 
 test('returns result', async () => {
-  td.when(Api.from(params)).thenReturn(api);
+  td.when(Api.from(params, td.matchers.isA(Config))).thenReturn(api);
   td.when(api.handler(params)).thenResolve(result);
 
   expect(await handler(event)).toEqual(result);
