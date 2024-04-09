@@ -4,7 +4,7 @@ export default defineConfig({
   test: {
     coverage: {
       include: ['lib/**/*.ts'],
-      exclude: ['lib/vendor/**'],
+      exclude: ['lib/**/vendor/**'],
     },
     globalSetup: './test/global-setup.ts',
   },
