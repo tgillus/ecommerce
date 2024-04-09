@@ -5,7 +5,7 @@ import { Construct } from 'constructs';
 import { ProductsResouces } from './products/products-resources.js';
 
 interface ApiStackProps extends cdk.StackProps {
-  productsTable: dynamo.ITableV2;
+  readonly productsTable: dynamo.ITableV2;
 }
 
 export class ApiStack extends cdk.Stack {

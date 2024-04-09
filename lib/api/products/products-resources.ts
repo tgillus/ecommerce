@@ -6,8 +6,8 @@ import { Construct } from 'constructs';
 import { Package } from '../../vendor/pkg/package.js';
 
 interface ProductsResourcesProps {
-  api: apigw.IRestApi;
-  productsTable: dynamo.ITableV2;
+  readonly api: apigw.IRestApi;
+  readonly productsTable: dynamo.ITableV2;
 }
 
 export class ProductsResouces extends Construct {
