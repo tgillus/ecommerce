@@ -25,6 +25,7 @@ export class CreateValidator implements Validator {
 }
 
 const ProductSchema = z.object({
+  description: z.string(),
   name: z.string(),
   price: z.string(),
 });

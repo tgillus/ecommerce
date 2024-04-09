@@ -1,3 +1,4 @@
+import { faker } from '@faker-js/faker';
 import { request, spec } from 'pactum';
 import { describe, test } from 'vitest';
 
@@ -10,8 +11,11 @@ describe('POST /products', () => {
     await spec()
       .post('/products')
       .withBody({
-        name: 'foo',
-        price: 'bar',
+        description: faker.commerce.productDescription(),
+        name: faker.commerce.productName(),
+        price: faker.commerce.price({
+          dec: 2,
+        }),
       })
       .expectStatus(200);
   });
