@@ -1,22 +1,38 @@
-import { Effect } from 'effect';
+import { Context, Effect, Layer, Match, Option, pipe } from 'effect';
 import { RequestParams } from '../../../common/request/request-params.js';
-import { Handler } from './handler/handler.js';
-import { Validator } from './validation/validator.js';
+import { DynamoClientLive } from '../../../common/vendor/dynamo/dynamo-client.js';
+import { DynamoGatewayLive } from '../../infrastructure/dynamo/dynamo-gateway.js';
+import { ProductMapperLive } from '../../infrastructure/dynamo/product-mapper.js';
+import { ProductServiceLive } from '../service/product-service.js';
+import { CreateOperationLive } from './create-operation.js';
+import { CreateHandlerLive } from './handler/create-handler.js';
+import { InvalidOperationLive } from './invalid-operation.js';
+import { CreateValidatorLive } from './validation/create-validator.js';
 
-export interface Operation {
-  exec(params: RequestParams): Effect.Effect<void, Error>;
-}
-
-export class ValidOperation implements Operation {
-  constructor(
-    private readonly validator: Validator,
-    private readonly handler: Handler
-  ) {}
-
-  exec = (params: RequestParams) =>
-    Effect.flatMap(this.validator.validate(params), this.handler.exec);
-}
-
-export class InvalidOperation implements Operation {
-  exec = () => Effect.fail(new Error('invalid operation'));
+export class Operation extends Context.Tag('Operation')<
+  Operation,
+  {
+    exec: (params: RequestParams) => Effect.Effect<void, Error>;
+  }
+>() {
+  static from = ({ httpMethod }: RequestParams) =>
+    pipe(
+      httpMethod,
+      Match.value,
+      Match.when('POST', () =>
+        CreateOperationLive.pipe(
+          Layer.provide(Layer.merge(CreateValidatorLive, CreateHandlerLive))
+        )
+      ),
+      Match.option,
+      Option.match({
+        onNone: () => InvalidOperationLive,
+        onSome: (operation) =>
+          operation.pipe(
+            Layer.provide(ProductServiceLive),
+            Layer.provide(DynamoGatewayLive),
+            Layer.provide(Layer.merge(DynamoClientLive, ProductMapperLive))
+          ),
+      })
+    );
 }

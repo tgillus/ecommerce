@@ -1,18 +1,29 @@
-import { Client } from '../../../common/vendor/dynamo/client.js';
+import { Config, Context, Effect, Layer } from 'effect';
+import { UnknownException } from 'effect/Cause';
+import { DynamoClient } from '../../../common/vendor/dynamo/dynamo-client.js';
 import { Product } from '../../domain/model/product.js';
-import { Config } from '../config/config.js';
 import { ProductMapper } from './product-mapper.js';
 
-export class DynamoGateway {
-  constructor(
-    private readonly client: Client,
-    private readonly tableName: string,
-    private readonly mapper: ProductMapper
-  ) {}
+export class DynamoGateway extends Context.Tag('DynamoGateway')<
+  DynamoGateway,
+  {
+    create: (product: Product) => Effect.Effect<void, UnknownException>;
+  }
+>() {}
 
-  create = (product: Product) =>
-    this.client.put(this.tableName, this.mapper.map(product));
+export const DynamoGatewayLive = Layer.effect(
+  DynamoGateway,
+  Effect.gen(function* (_) {
+    const tableName = yield* _(Config.string('PRODUCTS_TABLE_NAME'));
+    const client = yield* _(DynamoClient);
+    const productMapper = yield* _(ProductMapper);
 
-  static from = ({ tableName }: Config) =>
-    new DynamoGateway(new Client(), tableName, new ProductMapper());
-}
+    return {
+      create: (product) =>
+        Effect.gen(function* (_) {
+          const item = productMapper.map(product);
+          yield* _(client.put(tableName, item));
+        }),
+    };
+  })
+);

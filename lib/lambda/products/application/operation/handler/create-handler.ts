@@ -1,11 +1,21 @@
-import { Effect } from 'effect';
-import { ProductService } from '../../../domain/service/product-service.js';
+import { Context, Effect, Layer } from 'effect';
+import { ProductService } from '../../service/product-service.js';
 import { CreateArgs } from '../args/create-args.js';
-import { Handler } from './handler.js';
 
-export class CreateHandler implements Handler {
-  constructor(private readonly productService: ProductService) {}
+export class CreateHandler extends Context.Tag('CreateHandler')<
+  CreateHandler,
+  {
+    exec: (args: CreateArgs) => Effect.Effect<void, Error>;
+  }
+>() {}
 
-  exec = (args: CreateArgs): Effect.Effect<void, Error> =>
-    this.productService.create(args);
-}
+export const CreateHandlerLive = Layer.effect(
+  CreateHandler,
+  Effect.gen(function* (_) {
+    const productService = yield* _(ProductService);
+
+    return {
+      exec: (args: CreateArgs) => productService.create(args),
+    };
+  })
+);

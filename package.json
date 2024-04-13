@@ -44,7 +44,7 @@
   },
   "name": "ecommerce",
   "scripts": {
-    "build": "npm test && tsc",
+    "build": "tsc",
     "build:ci": "npm run clean && npm test && tsc",
     "cdk": "cdk",
     "clean": "del-cli coverage",

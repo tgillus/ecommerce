@@ -1,16 +1,24 @@
-import { Effect } from 'effect';
+import { Context, Effect, Layer } from 'effect';
 import { RequestParams } from '../../common/request/request-params.js';
-import { Response } from '../../common/response/response.js';
-import { OpFactory } from '../application/operation/op-factory.js';
 import { Operation } from '../application/operation/operation.js';
-import { Config } from '../infrastructure/config/config.js';
 
-export class Api {
-  constructor(private readonly operation: Operation) {}
-
-  handler = async (params: RequestParams) =>
-    Response.produce(await Effect.runPromiseExit(this.operation.exec(params)));
-
-  static from = (params: RequestParams, config: Config) =>
-    new Api(OpFactory.from(params, config));
+export class Api extends Context.Tag('Api')<
+  Api,
+  {
+    handler: (params: RequestParams) => Effect.Effect<void, Error>;
+  }
+>() {
+  static from = (params: RequestParams) =>
+    ApiLive.pipe(Layer.provide(Operation.from(params)));
 }
+
+export const ApiLive = Layer.effect(
+  Api,
+  Effect.gen(function* (_) {
+    const operation = yield* _(Operation);
+
+    return {
+      handler: (params) => operation.exec(params),
+    };
+  })
+);
