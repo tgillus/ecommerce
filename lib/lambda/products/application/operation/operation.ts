@@ -1,3 +1,4 @@
+import { Issue } from '@effect/schema/ArrayFormatter';
 import { Context, Effect, Layer, Match, Option, pipe } from 'effect';
 import { RequestParams } from '../../../common/request/request-params.js';
 import { DynamoClientLive } from '../../../common/vendor/dynamo/dynamo-client.js';
@@ -12,7 +13,7 @@ import { CreateValidatorLive } from './validation/create-validator.js';
 export class Operation extends Context.Tag('Operation')<
   Operation,
   {
-    exec: (params: RequestParams) => Effect.Effect<void, Error>;
+    exec: (params: RequestParams) => Effect.Effect<void, Error | Issue[]>;
   }
 >() {
   static from = ({ httpMethod }: RequestParams) =>

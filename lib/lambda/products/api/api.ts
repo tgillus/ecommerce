@@ -1,3 +1,4 @@
+import { Issue } from '@effect/schema/ArrayFormatter';
 import { Context, Effect, Layer } from 'effect';
 import { RequestParams } from '../../common/request/request-params.js';
 import { Operation } from '../application/operation/operation.js';
@@ -5,7 +6,7 @@ import { Operation } from '../application/operation/operation.js';
 export class Api extends Context.Tag('Api')<
   Api,
   {
-    handler: (params: RequestParams) => Effect.Effect<void, Error>;
+    handler: (params: RequestParams) => Effect.Effect<void, Error | Issue[]>;
   }
 >() {
   static from = (params: RequestParams) =>
