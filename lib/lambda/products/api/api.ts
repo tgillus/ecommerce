@@ -1,12 +1,13 @@
-import { Issue } from '@effect/schema/ArrayFormatter';
-import { Context, Effect, Layer } from 'effect';
+import { APIGatewayProxyResult } from 'aws-lambda';
+import { Context, Effect, Layer, pipe } from 'effect';
 import { RequestParams } from '../../common/request/request-params.js';
+import { Response } from '../../common/response/response.js';
 import { Operation } from '../application/operation/operation.js';
 
 export class Api extends Context.Tag('Api')<
   Api,
   {
-    handler: (params: RequestParams) => Effect.Effect<void, Error | Issue[]>;
+    handler: (params: RequestParams) => Effect.Effect<APIGatewayProxyResult>;
   }
 >() {
   static from = (params: RequestParams) =>
@@ -19,7 +20,15 @@ export const ApiLive = Layer.effect(
     const operation = yield* _(Operation);
 
     return {
-      handler: (params) => operation.exec(params),
+      handler: (params) =>
+        pipe(
+          params,
+          operation.exec,
+          Effect.match({
+            onFailure: Response.fail,
+            onSuccess: Response.success,
+          })
+        ),
     };
   })
 );
