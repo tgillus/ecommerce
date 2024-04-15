@@ -10,15 +10,12 @@ export class ProductMapper extends Context.Tag('ProductMapper')<
   }
 >() {}
 
-export const ProductMapperLive = Layer.succeed(
-  ProductMapper,
-  ProductMapper.of({
-    map: ({ description, name, price }) => ({
-      PK: `PRODUCT#${IdGenerator.generate()}`,
-      SK: `PRODUCT#${Time.now().toISOString()}`,
-      Description: description,
-      Name: name,
-      Price: price,
-    }),
-  })
-);
+export const ProductMapperLive = Layer.succeed(ProductMapper, {
+  map: ({ description, name, price }) => ({
+    PK: `PRODUCT#${IdGenerator.generate()}`,
+    SK: `PRODUCT#${Time.now().toISOString()}`,
+    Description: description,
+    Name: name,
+    Price: price,
+  }),
+});

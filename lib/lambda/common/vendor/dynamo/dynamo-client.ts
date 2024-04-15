@@ -17,15 +17,12 @@ export class DynamoClient extends Context.Tag('DynamoClient')<
   }
 >() {}
 
-export const DynamoClientLive = Layer.succeed(
-  DynamoClient,
-  DynamoClient.of({
-    put: (tableName: string, item: Record<string, string>) => {
-      const client = DynamoDBDocumentClient.from(new DynamoDBClient());
+export const DynamoClientLive = Layer.succeed(DynamoClient, {
+  put: (tableName: string, item: Record<string, string>) => {
+    const client = DynamoDBDocumentClient.from(new DynamoDBClient());
 
-      return Effect.tryPromise(() =>
-        client.send(new PutCommand({ TableName: tableName, Item: item }))
-      );
-    },
-  })
-);
+    return Effect.tryPromise(() =>
+      client.send(new PutCommand({ TableName: tableName, Item: item }))
+    );
+  },
+});
