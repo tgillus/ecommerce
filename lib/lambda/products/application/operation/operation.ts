@@ -41,7 +41,7 @@ export class Operation extends Context.Tag('Operation')<
 export const InvalidOperationLive = Layer.effect(
   Operation,
   Effect.succeed({
-    exec: () => Effect.fail(new Error('invalid operation')),
+    exec: () => Effect.fail(new Error('Invalid operation')),
   })
 );
 

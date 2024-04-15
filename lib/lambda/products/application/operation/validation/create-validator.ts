@@ -3,6 +3,7 @@ import * as S from '@effect/schema/Schema';
 import { Effect, Function, Layer, pipe } from 'effect';
 import { SafeJson } from '../../../../../vendor/type/safe-json.js';
 import { RequestParams } from '../../../../common/request/request-params.js';
+import { ValidationError } from '../../../error/validation-error.js';
 import { ProductEvent } from '../../event/product-event.js';
 import { Validator } from './validator.js';
 
@@ -18,7 +19,7 @@ export const CreateValidatorLive = Layer.succeed(Validator, {
       Effect.flatMap((data) =>
         pipe(data, S.decodeUnknown(ProductSchema, { errors: 'all' }))
       ),
-      Effect.mapError(formatError),
+      Effect.mapError((error) => new ValidationError(formatError(error))),
       Effect.map((product) => ({
         event: ProductEvent.CREATE_PRODUCT,
         product,
