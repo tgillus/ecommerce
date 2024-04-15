@@ -12,8 +12,8 @@ import {
 } from '../../../../../../lib/lambda/products/application/operation/operation.js';
 import { Validator } from '../../../../../../lib/lambda/products/application/operation/validation/validator.js';
 import { ProductServiceLive } from '../../../../../../lib/lambda/products/application/service/product-service.js';
-import { DynamoGatewayLive } from '../../../../../../lib/lambda/products/infrastructure/dynamo/dynamo-gateway.js';
-import { ProductMapperLive } from '../../../../../../lib/lambda/products/infrastructure/dynamo/product-mapper.js';
+import { DynamoGatewayLive } from '../../../../../../lib/lambda/products/infrastructure/persistence/dynamo-gateway.js';
+import { ProductMapperLive } from '../../../../../../lib/lambda/products/infrastructure/persistence/product-mapper.js';
 
 const params = td.object<RequestParams>();
 const args = td.object<CreateArgs>();

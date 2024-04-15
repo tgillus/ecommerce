@@ -1,11 +1,11 @@
 import { Context, Effect, Layer, Match, Option, pipe } from 'effect';
+import { InvalidOperationError } from '../../../common/application/error/invalid-operation-error.js';
+import { ServiceError } from '../../../common/application/error/service-error.js';
+import { ValidationError } from '../../../common/application/error/validation-error.js';
 import { RequestParams } from '../../../common/request/request-params.js';
 import { DynamoClientLive } from '../../../common/vendor/dynamo/dynamo-client.js';
-import { InvalidOperationError } from '../../error/invalid-operation-error.js';
-import { ServiceError } from '../../error/service-error.js';
-import { ValidationError } from '../../error/validation-error.js';
-import { DynamoGatewayLive } from '../../infrastructure/dynamo/dynamo-gateway.js';
-import { ProductMapperLive } from '../../infrastructure/dynamo/product-mapper.js';
+import { DynamoGatewayLive } from '../../infrastructure/persistence/dynamo-gateway.js';
+import { ProductMapperLive } from '../../infrastructure/persistence/product-mapper.js';
 import { ProductServiceLive } from '../service/product-service.js';
 import { CreateHandlerLive } from './handler/create-handler.js';
 import { Handler } from './handler/handler.js';

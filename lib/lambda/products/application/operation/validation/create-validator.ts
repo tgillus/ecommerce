@@ -2,8 +2,8 @@ import { formatError } from '@effect/schema/ArrayFormatter';
 import * as S from '@effect/schema/Schema';
 import { Effect, Function, Layer, pipe } from 'effect';
 import { SafeJson } from '../../../../../vendor/type/safe-json.js';
+import { ValidationError } from '../../../../common/application/error/validation-error.js';
 import { RequestParams } from '../../../../common/request/request-params.js';
-import { ValidationError } from '../../../error/validation-error.js';
 import { ProductEvent } from '../../event/product-event.js';
 import { Validator } from './validator.js';
 
