@@ -1,5 +1,5 @@
 import { APIGatewayProxyResult } from 'aws-lambda';
-import { Context, Effect, Layer, pipe } from 'effect';
+import { Context, Effect, Layer, Match, flow, pipe } from 'effect';
 import { RequestParams } from '../../common/request/request-params.js';
 import { Response } from '../../common/response/response.js';
 import { Operation } from '../application/operation/operation.js';
@@ -25,7 +25,15 @@ export const ApiLive = Layer.effect(
           params,
           operation.exec,
           Effect.match({
-            onFailure: Response.fail,
+            onFailure: flow(
+              Match.value,
+              Match.tags({
+                InvalidOperationError: Response.fail,
+                ServiceError: Response.fail,
+                ValidationError: Response.fail,
+              }),
+              Match.exhaustive
+            ),
             onSuccess: Response.success,
           })
         ),
