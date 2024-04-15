@@ -1,6 +1,9 @@
 import { Context, Effect, Layer, Match, Option, pipe } from 'effect';
 import { RequestParams } from '../../../common/request/request-params.js';
 import { DynamoClientLive } from '../../../common/vendor/dynamo/dynamo-client.js';
+import { InvalidOperationError } from '../../error/invalid-operation-error.js';
+import { ServiceError } from '../../error/service-error.js';
+import { ValidationError } from '../../error/validation-error.js';
 import { DynamoGatewayLive } from '../../infrastructure/dynamo/dynamo-gateway.js';
 import { ProductMapperLive } from '../../infrastructure/dynamo/product-mapper.js';
 import { ProductServiceLive } from '../service/product-service.js';
@@ -12,7 +15,12 @@ import { Validator } from './validation/validator.js';
 export class Operation extends Context.Tag('Operation')<
   Operation,
   {
-    exec: (params: RequestParams) => Effect.Effect<void, Error>;
+    exec: (
+      params: RequestParams
+    ) => Effect.Effect<
+      void,
+      InvalidOperationError | ServiceError | ValidationError
+    >;
   }
 >() {
   static from = ({ httpMethod }: RequestParams) =>
@@ -40,7 +48,7 @@ export class Operation extends Context.Tag('Operation')<
 export const InvalidOperationLive = Layer.effect(
   Operation,
   Effect.succeed({
-    exec: () => Effect.fail(new Error('Invalid operation')),
+    exec: () => Effect.fail(new InvalidOperationError()),
   })
 );
 
@@ -52,10 +60,13 @@ export const ValidOperationLive = Layer.effect(
 
     return {
       exec: (params: RequestParams) =>
-        Effect.gen(function* (_) {
-          const args = yield* _(validator.validate(params));
-          yield* _(handler.exec(args));
-        }),
+        pipe(
+          Effect.gen(function* (_) {
+            const args = yield* _(validator.validate(params));
+            yield* _(handler.exec(args));
+          }),
+          Effect.mapError((error) => new ServiceError(error))
+        ),
     };
   })
 );
