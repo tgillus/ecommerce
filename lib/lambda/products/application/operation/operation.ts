@@ -5,10 +5,10 @@ import { DynamoClientLive } from '../../../common/vendor/dynamo/dynamo-client.js
 import { DynamoGatewayLive } from '../../infrastructure/dynamo/dynamo-gateway.js';
 import { ProductMapperLive } from '../../infrastructure/dynamo/product-mapper.js';
 import { ProductServiceLive } from '../service/product-service.js';
-import { CreateOperationLive } from './create-operation.js';
 import { CreateHandlerLive } from './handler/create-handler.js';
-import { InvalidOperationLive } from './invalid-operation.js';
+import { Handler } from './handler/handler.js';
 import { CreateValidatorLive } from './validation/create-validator.js';
+import { Validator } from './validation/validator.js';
 
 export class Operation extends Context.Tag('Operation')<
   Operation,
@@ -21,7 +21,7 @@ export class Operation extends Context.Tag('Operation')<
       httpMethod,
       Match.value,
       Match.when('POST', () =>
-        CreateOperationLive.pipe(
+        ValidOperationLive.pipe(
           Layer.provide(Layer.merge(CreateValidatorLive, CreateHandlerLive))
         )
       ),
@@ -37,3 +37,26 @@ export class Operation extends Context.Tag('Operation')<
       })
     );
 }
+
+export const InvalidOperationLive = Layer.effect(
+  Operation,
+  Effect.succeed({
+    exec: () => Effect.fail(new Error('invalid operation')),
+  })
+);
+
+export const ValidOperationLive = Layer.effect(
+  Operation,
+  Effect.gen(function* (_) {
+    const validator = yield* _(Validator);
+    const handler = yield* _(Handler);
+
+    return {
+      exec: (params: RequestParams) =>
+        Effect.gen(function* (_) {
+          const args = yield* _(validator.validate(params));
+          yield* _(handler.exec(args));
+        }),
+    };
+  })
+);
