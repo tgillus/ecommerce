@@ -1,4 +1,4 @@
-import { formatError } from '@effect/schema/ArrayFormatter';
+import { formatErrorSync } from '@effect/schema/ArrayFormatter';
 import * as S from '@effect/schema/Schema';
 import { Effect, Function, Layer, pipe } from 'effect';
 import { SafeJson } from '../../../../../vendor/type/safe-json.js';
@@ -19,7 +19,7 @@ export const CreateValidatorLive = Layer.succeed(Validator, {
       Effect.flatMap((data) =>
         pipe(data, S.decodeUnknown(ProductSchema, { errors: 'all' }))
       ),
-      Effect.mapError((error) => new ValidationError(formatError(error))),
+      Effect.mapError((error) => new ValidationError(formatErrorSync(error))),
       Effect.map((product) => ({
         event: ProductEvent.CREATE_PRODUCT,
         product,
@@ -27,8 +27,8 @@ export const CreateValidatorLive = Layer.succeed(Validator, {
     ),
 });
 
-export const ProductSchema = S.struct({
-  description: S.string,
-  name: S.string,
-  price: S.string,
+export const ProductSchema = S.Struct({
+  description: S.String,
+  name: S.String,
+  price: S.String,
 });
