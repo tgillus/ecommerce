@@ -1,6 +1,6 @@
 import { formatErrorSync } from '@effect/schema/ArrayFormatter';
 import * as S from '@effect/schema/Schema';
-import { Effect, Function, Layer, pipe } from 'effect';
+import { Effect, Layer, pipe } from 'effect';
 import { SafeJson } from '../../../../../vendor/type/safe-json.js';
 import { ValidationError } from '../../../../common/application/error/validation-error.js';
 import { RequestParams } from '../../../../common/request/request-params.js';
@@ -12,10 +12,7 @@ export const CreateValidatorLive = Layer.succeed(Validator, {
     pipe(
       body,
       SafeJson.parse,
-      Effect.match({
-        onFailure: () => ({}),
-        onSuccess: Function.identity,
-      }),
+      Effect.orElseSucceed(() => ({})),
       Effect.flatMap((data) =>
         pipe(data, S.decodeUnknown(ProductSchema, { errors: 'all' }))
       ),
