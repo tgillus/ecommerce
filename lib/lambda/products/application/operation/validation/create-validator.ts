@@ -1,6 +1,6 @@
 import { formatErrorSync } from '@effect/schema/ArrayFormatter';
 import * as S from '@effect/schema/Schema';
-import { Effect, Layer, pipe } from 'effect';
+import { Effect, Inspectable, Layer, Logger, pipe } from 'effect';
 import { SafeJson } from '../../../../../vendor/type/safe-json.js';
 import { ValidationError } from '../../../../common/application/error/validation-error.js';
 import { RequestParams } from '../../../../common/request/request-params.js';
@@ -23,6 +23,22 @@ export const CreateValidatorLive = Layer.succeed(Validator, {
       }))
     ),
 });
+
+export const logger = Logger.make(({ logLevel, message }) => {
+  globalThis.console.log(
+    Inspectable.stringifyCircular({
+      foo: 'bar',
+      logLevel: logLevel.label,
+      message,
+      timestamp: new Date().toISOString(),
+    })
+  );
+});
+const layer = Logger.replace(Logger.defaultLogger, logger);
+
+const program = Effect.log('Hello, World!');
+// Effect.runSync(Effect.provide(program, Logger.json));
+Effect.runSync(Effect.provide(program, layer));
 
 export const ProductSchema = S.Struct({
   description: S.String,
