@@ -6,12 +6,11 @@
   "dependencies": {
     "@aws-sdk/client-dynamodb": "3.556.0",
     "@aws-sdk/lib-dynamodb": "3.556.0",
-    "@effect/schema": "0.66.4",
+    "@effect/schema": "0.66.5",
     "@sindresorhus/is": "6.2.0",
     "aws-cdk-lib": "2.138.0",
     "constructs": "10.3.0",
     "effect": "3.0.3",
-    "fast-check": "3.17.1",
     "nanoid": "5.0.7",
     "parse-json": "8.1.0",
     "pkg-dir": "8.0.0",
