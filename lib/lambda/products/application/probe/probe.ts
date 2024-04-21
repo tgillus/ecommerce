@@ -1,4 +1,5 @@
 import { Context, Effect, Layer } from 'effect';
+import { ValidationError } from '../../../common/application/error/validation-error.js';
 import { AppLogger } from '../../infrastructure/logging/app-logger.js';
 
 export class Probe extends Context.Tag('Probe')<
@@ -6,6 +7,8 @@ export class Probe extends Context.Tag('Probe')<
   {
     validRequestReceived: () => Effect.Effect<void>;
     invalidRequestReceived: () => Effect.Effect<void>;
+    argsValidationSucceeded: () => Effect.Effect<void>;
+    argsValidationFailed: (error: ValidationError) => Effect.Effect<void>;
     savingProductToDynamoSucceeded: () => Effect.Effect<void>;
     savingProductToDynamoFailed: (error: Error) => Effect.Effect<void>;
   }
@@ -22,6 +25,9 @@ export const ProbeLive = Layer.effect(
       validRequestReceived: () => logger.info('Valid request received.'),
       invalidRequestReceived: () =>
         logger.error(new Error('Invalid request received.')),
+      argsValidationSucceeded: () =>
+        logger.info('Arguments validation succeeded.'),
+      argsValidationFailed: (error) => logger.error(error),
       savingProductToDynamoSucceeded: () =>
         logger.info('Saving product to dynamo succeeded .'),
       savingProductToDynamoFailed: logger.error,
