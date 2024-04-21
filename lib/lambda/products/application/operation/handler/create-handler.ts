@@ -1,5 +1,7 @@
 import { Effect, Layer } from 'effect';
+import { ServiceError } from '../../../../common/application/error/service-error.js';
 import { ProductService } from '../../service/product-service.js';
+import { CreateArgs } from '../args/create-args.js';
 import { Handler } from './handler.js';
 
 export const CreateHandlerLive = Layer.effect(
@@ -8,7 +10,10 @@ export const CreateHandlerLive = Layer.effect(
     const productService = yield* _(ProductService);
 
     return {
-      exec: productService.create,
+      exec: (args: CreateArgs) =>
+        productService
+          .create(args)
+          .pipe(Effect.mapError((error) => new ServiceError(error))),
     };
   })
 );

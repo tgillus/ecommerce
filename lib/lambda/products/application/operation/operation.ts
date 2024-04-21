@@ -3,6 +3,7 @@ import { InvalidOperationError } from '../../../common/application/error/invalid
 import { ServiceError } from '../../../common/application/error/service-error.js';
 import { ValidationError } from '../../../common/application/error/validation-error.js';
 import { RequestParams } from '../../../common/request/request-params.js';
+import { Probe } from '../probe/probe.js';
 import { ProductService } from '../service/product-service.js';
 import { CreateHandlerLive } from './handler/create-handler.js';
 import { Handler } from './handler/handler.js';
@@ -36,22 +37,33 @@ export class Operation extends Context.Tag('Operation')<
     );
 }
 
-export const InvalidOperationLive = Layer.succeed(Operation, {
-  exec: () => Effect.fail(new InvalidOperationError()),
-});
+export const InvalidOperationLive = Layer.effect(
+  Operation,
+  Effect.gen(function* (_) {
+    const probe = yield* _(Probe);
+
+    return {
+      exec: () =>
+        probe
+          .invalidRequestReceived()
+          .pipe(Effect.flatMap(() => Effect.fail(new InvalidOperationError()))),
+    };
+  })
+);
 
 export const ValidOperationLive = Layer.effect(
   Operation,
   Effect.gen(function* (_) {
     const validator = yield* _(Validator);
     const handler = yield* _(Handler);
+    const probe = yield* _(Probe);
 
     return {
       exec: (params: RequestParams) =>
-        Effect.gen(function* (_) {
-          const args = yield* _(validator.validate(params));
-          yield* _(handler.exec(args));
-        }).pipe(Effect.mapError((error) => new ServiceError(error))),
+        probe.validRequestReceived().pipe(
+          Effect.flatMap(() => validator.validate(params)),
+          Effect.flatMap(handler.exec)
+        ),
     };
   })
 );

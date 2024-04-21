@@ -11,6 +11,7 @@ import {
   ValidOperationLive,
 } from '../../../../../../lib/lambda/products/application/operation/operation.js';
 import { Validator } from '../../../../../../lib/lambda/products/application/operation/validation/validator.js';
+import { Probe } from '../../../../../../lib/lambda/products/application/probe/probe.js';
 import { ProductServiceLive } from '../../../../../../lib/lambda/products/application/service/product-service.js';
 import { DynamoGatewayLive } from '../../../../../../lib/lambda/products/infrastructure/persistence/dynamo-gateway.js';
 import { ProductMapperLive } from '../../../../../../lib/lambda/products/infrastructure/persistence/product-mapper.js';
@@ -22,13 +23,17 @@ const program = Effect.gen(function* (_) {
   const operation = yield* _(Operation);
   return yield* _(operation.exec(params));
 });
+const layer = Layer.succeed(Probe, {
+  invalidRequestReceived: () => Effect.void,
+  validRequestReceived: () => Effect.void,
+});
 
 afterEach(() => {
   td.reset();
 });
 
 test('executes invalid operations', () => {
-  const operation = InvalidOperationLive;
+  const operation = InvalidOperationLive.pipe(Layer.provide(layer));
   const runnable = Effect.provide(program, operation);
 
   const result = Effect.runSyncExit(runnable);
@@ -46,7 +51,7 @@ test('executes valid operations', () => {
   });
   const operation = ValidOperationLive.pipe(
     Layer.provide(Layer.merge(validator, handler))
-  );
+  ).pipe(Layer.provide(layer));
   const runnable = Effect.provide(program, operation);
 
   const result = Effect.runSyncExit(runnable);

@@ -1,6 +1,7 @@
 import { APIGatewayEvent, APIGatewayProxyResult } from 'aws-lambda';
-import { Effect } from 'effect';
+import { Effect, Layer } from 'effect';
 import { RequestParams } from '../../common/request/request-params.js';
+import { Probe } from '../application/probe/probe.js';
 import { Api } from './api.js';
 
 export const handler = async (
@@ -11,6 +12,7 @@ export const handler = async (
     const api = yield* _(Api);
     return yield* _(api.handler(params));
   });
+  const layer = Api.from(params).pipe(Layer.provide(Probe.build()));
 
-  return await Effect.runPromise(Effect.provide(program, Api.from(params)));
+  return await Effect.runPromise(Effect.provide(program, layer));
 };
