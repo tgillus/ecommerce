@@ -1,15 +1,23 @@
 import { Config, Context, Effect, Layer } from 'effect';
 import { UnknownException } from 'effect/Cause';
-import { DynamoClient } from '../../../common/vendor/dynamo/dynamo-client.js';
+import {
+  DynamoClient,
+  DynamoClientLive,
+} from '../../../common/vendor/dynamo/dynamo-client.js';
 import { Product } from '../../domain/model/product.js';
-import { ProductMapper } from './product-mapper.js';
+import { ProductMapper, ProductMapperLive } from './product-mapper.js';
 
 export class DynamoGateway extends Context.Tag('DynamoGateway')<
   DynamoGateway,
   {
     create: (product: Product) => Effect.Effect<void, UnknownException>;
   }
->() {}
+>() {
+  static build = () =>
+    DynamoGatewayLive.pipe(
+      Layer.provide(Layer.merge(DynamoClientLive, ProductMapperLive))
+    );
+}
 
 export const DynamoGatewayLive = Layer.effect(
   DynamoGateway,

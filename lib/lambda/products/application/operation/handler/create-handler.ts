@@ -1,6 +1,5 @@
 import { Effect, Layer } from 'effect';
 import { ProductService } from '../../service/product-service.js';
-import { CreateArgs } from '../args/create-args.js';
 import { Handler } from './handler.js';
 
 export const CreateHandlerLive = Layer.effect(
@@ -9,7 +8,7 @@ export const CreateHandlerLive = Layer.effect(
     const productService = yield* _(ProductService);
 
     return {
-      exec: (args: CreateArgs) => productService.create(args),
+      exec: productService.create,
     };
   })
 );

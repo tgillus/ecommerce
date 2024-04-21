@@ -8,7 +8,10 @@ export class ProductService extends Context.Tag('ProductService')<
   {
     create: (args: CreateArgs) => Effect.Effect<void, UnknownException>;
   }
->() {}
+>() {
+  static build = () =>
+    ProductServiceLive.pipe(Layer.provide(DynamoGateway.build()));
+}
 
 export const ProductServiceLive = Layer.effect(
   ProductService,
