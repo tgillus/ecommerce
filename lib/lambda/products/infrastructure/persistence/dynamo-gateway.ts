@@ -27,11 +27,10 @@ export const DynamoGatewayLive = Layer.effect(
     const productMapper = yield* _(ProductMapper);
 
     return {
-      create: (product) =>
-        Effect.gen(function* (_) {
-          const item = productMapper.map(product);
-          yield* _(client.put(tableName, item));
-        }),
+      create: (product) => {
+        const item = productMapper.map(product);
+        return client.put(tableName, item);
+      },
     };
   })
 );
