@@ -5,6 +5,7 @@
   "description": "An e-commerce project used to explore event-based APIs and microservices.",
   "dependencies": {
     "@aws-sdk/client-dynamodb": "3.556.0",
+    "@aws-sdk/client-s3": "3.556.0",
     "@aws-sdk/lib-dynamodb": "3.556.0",
     "@effect/schema": "0.66.5",
     "@sindresorhus/is": "6.2.0",
