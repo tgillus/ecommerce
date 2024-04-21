@@ -4,7 +4,8 @@ import { AppLogger } from '../../infrastructure/logging/app-logger.js';
 export class Probe extends Context.Tag('Probe')<
   Probe,
   {
-    requestReceived: () => Effect.Effect<void>;
+    validRequestReceived: () => Effect.Effect<void>;
+    invalidRequestReceived: () => Effect.Effect<void>;
   }
 >() {
   static build = () => ProbeLive.pipe(Layer.provide(AppLogger.build()));
@@ -16,7 +17,9 @@ export const ProbeLive = Layer.effect(
     const logger = yield* _(AppLogger);
 
     return {
-      requestReceived: () => logger.info('Request received'),
+      validRequestReceived: () => logger.info('Valid request received.'),
+      invalidRequestReceived: () =>
+        logger.error(new Error('Invalid request received.')),
     };
   })
 );
