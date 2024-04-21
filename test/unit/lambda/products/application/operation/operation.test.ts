@@ -26,6 +26,8 @@ const program = Effect.gen(function* (_) {
 const layer = Layer.succeed(Probe, {
   invalidRequestReceived: () => Effect.void,
   validRequestReceived: () => Effect.void,
+  savingProductToDynamoFailed: () => Effect.void,
+  savingProductToDynamoSucceeded: () => Effect.void,
 });
 
 afterEach(() => {

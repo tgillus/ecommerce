@@ -6,6 +6,8 @@ export class Probe extends Context.Tag('Probe')<
   {
     validRequestReceived: () => Effect.Effect<void>;
     invalidRequestReceived: () => Effect.Effect<void>;
+    savingProductToDynamoSucceeded: () => Effect.Effect<void>;
+    savingProductToDynamoFailed: (error: Error) => Effect.Effect<void>;
   }
 >() {
   static build = () => ProbeLive.pipe(Layer.provide(AppLogger.build()));
@@ -20,6 +22,9 @@ export const ProbeLive = Layer.effect(
       validRequestReceived: () => logger.info('Valid request received.'),
       invalidRequestReceived: () =>
         logger.error(new Error('Invalid request received.')),
+      savingProductToDynamoSucceeded: () =>
+        logger.info('Saving product to dynamo succeeded .'),
+      savingProductToDynamoFailed: logger.error,
     };
   })
 );
