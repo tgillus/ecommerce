@@ -34,11 +34,3 @@ const jsonLogger = Logger.make(
     );
   }
 );
-
-// const program = Effect.gen(function* (_) {
-//   const logger = yield* _(AppLogger);
-
-//   yield* _(logger.info('This is an info message.'));
-//   yield* _(logger.error(new Error('This is an error.')));
-// });
-// Effect.runSync(Effect.provide(program, AppLogger.build()));
