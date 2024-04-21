@@ -9,16 +9,7 @@ import {
   SelectObjectContentCommandOutput,
   SelectObjectContentEventStream,
 } from '@aws-sdk/client-s3';
-import {
-  Chunk,
-  Effect,
-  Either,
-  Match,
-  Option,
-  Sink,
-  Stream,
-  pipe,
-} from 'effect';
+import { Chunk, Effect, Either, Match, Option, Sink, Stream } from 'effect';
 
 export class Client {
   private readonly client = new S3Client();
@@ -40,8 +31,7 @@ export class Client {
   }: SelectObjectContentCommandOutput) =>
     Match.value(httpStatusCode).pipe(
       Match.when(200, () =>
-        pipe(
-          Option.fromNullable(Payload),
+        Option.fromNullable(Payload).pipe(
           Either.fromOption(() => new Error('Payload not found')),
           Effect.flatMap(this.selectOutputPayload)
         )
