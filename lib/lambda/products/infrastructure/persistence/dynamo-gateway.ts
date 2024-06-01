@@ -1,12 +1,13 @@
 import { Config, Context, Effect, Layer } from 'effect';
-import { UnknownException } from 'effect/Cause';
+import type { UnknownException } from 'effect/Cause';
 import {
   DynamoClient,
   DynamoClientLive,
 } from '../../../common/vendor/dynamo/dynamo-client.js';
-import { Product } from '../../domain/model/product.js';
+import type { Product } from '../../domain/model/product.js';
 import { ProductMapper, ProductMapperLive } from './product-mapper.js';
 
+// biome-ignore lint/complexity/noStaticOnlyClass: <explanation>
 export class DynamoGateway extends Context.Tag('DynamoGateway')<
   DynamoGateway,
   {

@@ -1,7 +1,7 @@
 import * as cdk from 'aws-cdk-lib';
 import * as apigw from 'aws-cdk-lib/aws-apigateway';
-import * as dynamo from 'aws-cdk-lib/aws-dynamodb';
-import { Construct } from 'constructs';
+import type * as dynamo from 'aws-cdk-lib/aws-dynamodb';
+import type { Construct } from 'constructs';
 import { ProductsResouces } from './products/products-resources.js';
 
 interface ApiStackProps extends cdk.StackProps {

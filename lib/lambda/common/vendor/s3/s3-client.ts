@@ -1,13 +1,13 @@
 import {
   GetObjectCommand,
-  GetObjectCommandInput,
   PutObjectCommand,
-  PutObjectCommandInput,
   S3Client,
   SelectObjectContentCommand,
-  SelectObjectContentCommandInput,
-  SelectObjectContentCommandOutput,
-  SelectObjectContentEventStream,
+  type GetObjectCommandInput,
+  type PutObjectCommandInput,
+  type SelectObjectContentCommandInput,
+  type SelectObjectContentCommandOutput,
+  type SelectObjectContentEventStream,
 } from '@aws-sdk/client-s3';
 import { Chunk, Effect, Either, Match, Option, Sink, Stream } from 'effect';
 

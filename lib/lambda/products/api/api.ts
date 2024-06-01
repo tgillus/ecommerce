@@ -1,9 +1,10 @@
-import { APIGatewayProxyResult } from 'aws-lambda';
+import type { APIGatewayProxyResult } from 'aws-lambda';
 import { Context, Effect, Layer, Match, flow } from 'effect';
-import { RequestParams } from '../../common/request/request-params.js';
+import type { RequestParams } from '../../common/request/request-params.js';
 import { Response } from '../../common/response/response.js';
 import { Operation } from '../application/operation/operation.js';
 
+// biome-ignore lint/complexity/noStaticOnlyClass: <explanation>
 export class Api extends Context.Tag('Api')<
   Api,
   {

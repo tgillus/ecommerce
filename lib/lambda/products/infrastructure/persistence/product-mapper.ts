@@ -1,7 +1,7 @@
 import { Context, Layer } from 'effect';
 import { IdGenerator } from '../../../../vendor/id/id-generator.js';
 import { Time } from '../../../../vendor/type/time.js';
-import { Product } from '../../domain/model/product.js';
+import type { Product } from '../../domain/model/product.js';
 
 export class ProductMapper extends Context.Tag('ProductMapper')<
   ProductMapper,

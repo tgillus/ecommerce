@@ -1,5 +1,5 @@
-import { APIGatewayProxyResult } from 'aws-lambda';
-import { ResponseDetails } from './response-details.js';
+import type { APIGatewayProxyResult } from 'aws-lambda';
+import type { ResponseDetails } from './response-details.js';
 
 export class Response {
   constructor(private readonly details: ResponseDetails) {}

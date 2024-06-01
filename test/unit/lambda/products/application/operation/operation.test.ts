@@ -3,7 +3,7 @@ import * as td from 'testdouble';
 import { afterEach, expect, test } from 'vitest';
 import { RequestParams } from '../../../../../../lib/lambda/common/request/request-params.js';
 import { DynamoClientLive } from '../../../../../../lib/lambda/common/vendor/dynamo/dynamo-client.js';
-import { CreateArgs } from '../../../../../../lib/lambda/products/application/operation/args/create-args.js';
+import type { CreateArgs } from '../../../../../../lib/lambda/products/application/operation/args/create-args.js';
 import { Handler } from '../../../../../../lib/lambda/products/application/operation/handler/handler.js';
 import {
   InvalidOperationLive,

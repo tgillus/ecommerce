@@ -1,7 +1,8 @@
 import { Context, Effect, Layer } from 'effect';
-import { ValidationError } from '../../../common/application/error/validation-error.js';
+import type { ValidationError } from '../../../common/application/error/validation-error.js';
 import { AppLogger } from '../../infrastructure/logging/app-logger.js';
 
+// biome-ignore lint/complexity/noStaticOnlyClass: <explanation>
 export class Probe extends Context.Tag('Probe')<
   Probe,
   {

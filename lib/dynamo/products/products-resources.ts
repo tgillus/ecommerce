@@ -1,4 +1,4 @@
-import * as dynamodb from 'aws-cdk-lib/aws-dynamodb';
+import type * as dynamodb from 'aws-cdk-lib/aws-dynamodb';
 import { Construct } from 'constructs';
 import { ProductsTable } from './products-table.js';
 

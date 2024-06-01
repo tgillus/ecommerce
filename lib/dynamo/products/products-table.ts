@@ -1,6 +1,6 @@
 import * as cdk from 'aws-cdk-lib';
 import * as dynamo from 'aws-cdk-lib/aws-dynamodb';
-import { Construct } from 'constructs';
+import type { Construct } from 'constructs';
 
 export class ProductsTable extends dynamo.TableV2 {
   constructor(scope: Construct) {

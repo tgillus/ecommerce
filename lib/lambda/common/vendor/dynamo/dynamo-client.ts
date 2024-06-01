@@ -2,10 +2,10 @@ import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
 import {
   DynamoDBDocumentClient,
   PutCommand,
-  PutCommandOutput,
+  type PutCommandOutput,
 } from '@aws-sdk/lib-dynamodb';
 import { Context, Effect, Layer } from 'effect';
-import { UnknownException } from 'effect/Cause';
+import type { UnknownException } from 'effect/Cause';
 
 export class DynamoClient extends Context.Tag('DynamoClient')<
   DynamoClient,

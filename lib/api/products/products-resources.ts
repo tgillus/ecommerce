@@ -1,5 +1,5 @@
 import * as apigw from 'aws-cdk-lib/aws-apigateway';
-import * as dynamo from 'aws-cdk-lib/aws-dynamodb';
+import type * as dynamo from 'aws-cdk-lib/aws-dynamodb';
 import * as lambda from 'aws-cdk-lib/aws-lambda';
 import * as nodejs from 'aws-cdk-lib/aws-lambda-nodejs';
 import { Construct } from 'constructs';

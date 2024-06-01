@@ -1,4 +1,4 @@
-import { Issue } from '@effect/schema/ArrayFormatter';
+import type { Issue } from '@effect/schema/ArrayFormatter';
 import { Data } from 'effect';
 
 export class ValidationError extends Data.TaggedError('ValidationError')<{

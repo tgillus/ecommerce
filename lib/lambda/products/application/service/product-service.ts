@@ -1,9 +1,10 @@
 import { Context, Effect, Layer } from 'effect';
-import { UnknownException } from 'effect/Cause';
+import type { UnknownException } from 'effect/Cause';
 import { DynamoGateway } from '../../infrastructure/persistence/dynamo-gateway.js';
-import { CreateArgs } from '../operation/args/create-args.js';
+import type { CreateArgs } from '../operation/args/create-args.js';
 import { Probe } from '../probe/probe.js';
 
+// biome-ignore lint/complexity/noStaticOnlyClass: <explanation>
 export class ProductService extends Context.Tag('ProductService')<
   ProductService,
   {

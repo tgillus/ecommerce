@@ -1,4 +1,4 @@
-import { APIGatewayEvent } from 'aws-lambda';
+import type { APIGatewayEvent } from 'aws-lambda';
 import { Effect, Layer } from 'effect';
 import * as td from 'testdouble';
 import { afterEach, beforeEach, expect, test } from 'vitest';

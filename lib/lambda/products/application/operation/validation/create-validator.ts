@@ -3,7 +3,7 @@ import * as S from '@effect/schema/Schema';
 import { Effect, Layer, pipe } from 'effect';
 import { SafeJson } from '../../../../../vendor/type/safe-json.js';
 import { ValidationError } from '../../../../common/application/error/validation-error.js';
-import { RequestParams } from '../../../../common/request/request-params.js';
+import type { RequestParams } from '../../../../common/request/request-params.js';
 import { ProductEvent } from '../../event/product-event.js';
 import { Probe } from '../../probe/probe.js';
 import { Validator } from './validator.js';

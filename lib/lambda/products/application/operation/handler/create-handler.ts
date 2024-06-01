@@ -1,7 +1,7 @@
 import { Effect, Layer } from 'effect';
 import { ServiceError } from '../../../../common/application/error/service-error.js';
 import { ProductService } from '../../service/product-service.js';
-import { CreateArgs } from '../args/create-args.js';
+import type { CreateArgs } from '../args/create-args.js';
 import { Handler } from './handler.js';
 
 export const CreateHandlerLive = Layer.effect(

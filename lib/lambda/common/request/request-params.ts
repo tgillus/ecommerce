@@ -1,4 +1,4 @@
-import { APIGatewayEvent } from 'aws-lambda';
+import type { APIGatewayEvent } from 'aws-lambda';
 import { Option } from 'effect';
 
 export class RequestParams {

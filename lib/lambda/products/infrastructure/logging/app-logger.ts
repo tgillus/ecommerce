@@ -1,6 +1,7 @@
 import { Context, Effect, Inspectable, Layer, Logger } from 'effect';
 import { IdGenerator } from '../../../../vendor/id/id-generator.js';
 
+// biome-ignore lint/complexity/noStaticOnlyClass: <explanation>
 export class AppLogger extends Context.Tag('AppLogger')<
   AppLogger,
   {

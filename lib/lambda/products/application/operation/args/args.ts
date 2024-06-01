@@ -1,3 +1,3 @@
-import { CreateArgs } from './create-args.js';
+import type { CreateArgs } from './create-args.js';
 
 export type Args = CreateArgs;

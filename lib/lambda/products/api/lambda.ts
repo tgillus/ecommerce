@@ -1,4 +1,4 @@
-import { APIGatewayEvent, APIGatewayProxyResult } from 'aws-lambda';
+import type { APIGatewayEvent, APIGatewayProxyResult } from 'aws-lambda';
 import { Effect, Layer } from 'effect';
 import { RequestParams } from '../../common/request/request-params.js';
 import { Probe } from '../application/probe/probe.js';
