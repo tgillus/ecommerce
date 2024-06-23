@@ -10,14 +10,14 @@ import { Validator } from './validator.js';
 
 export const CreateValidatorLive = Layer.effect(
   Validator,
-  Effect.gen(function* (_) {
-    const probe = yield* _(Probe);
+  Effect.gen(function* () {
+    const probe = yield* Probe;
 
     return {
       validate: ({ body }: RequestParams) =>
         SafeJson.parse(body).pipe(
           Effect.orElseSucceed(() => ({})),
-          Effect.flatMap((data) =>
+          Effect.andThen((data) =>
             pipe(data, S.decodeUnknown(ProductSchema, { errors: 'all' }))
           ),
           Effect.mapError(
@@ -27,7 +27,7 @@ export const CreateValidatorLive = Layer.effect(
             onFailure: probe.argsValidationFailed,
             onSuccess: probe.argsValidationSucceeded,
           }),
-          Effect.map((product) => ({
+          Effect.andThen((product) => ({
             event: ProductEvent.CREATE_PRODUCT,
             product,
           }))
@@ -35,6 +35,19 @@ export const CreateValidatorLive = Layer.effect(
     };
   })
 );
+
+export const CreateValidatorTest = Layer.succeed(Validator, {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  validate: (_params: RequestParams) =>
+    Effect.succeed({
+      event: ProductEvent.CREATE_PRODUCT,
+      product: {
+        description: 'foo',
+        name: 'bar',
+        price: '9.99',
+      },
+    }),
+});
 
 export const ProductSchema = S.Struct({
   description: S.String,

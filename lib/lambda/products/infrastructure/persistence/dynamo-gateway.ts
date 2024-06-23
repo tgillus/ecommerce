@@ -22,10 +22,10 @@ export class DynamoGateway extends Context.Tag('DynamoGateway')<
 
 export const DynamoGatewayLive = Layer.effect(
   DynamoGateway,
-  Effect.gen(function* (_) {
-    const tableName = yield* _(Config.string('PRODUCTS_TABLE_NAME'));
-    const client = yield* _(DynamoClient);
-    const productMapper = yield* _(ProductMapper);
+  Effect.gen(function* () {
+    const tableName = yield* Config.string('PRODUCTS_TABLE_NAME');
+    const client = yield* DynamoClient;
+    const productMapper = yield* ProductMapper;
 
     return {
       create: (product) => {

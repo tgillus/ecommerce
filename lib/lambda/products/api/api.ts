@@ -3,6 +3,7 @@ import { Context, Effect, Layer, Match, flow } from 'effect';
 import type { RequestParams } from '../../common/request/request-params.js';
 import { Response } from '../../common/response/response.js';
 import { Operation } from '../application/operation/operation.js';
+import { Probe } from '../application/probe/probe.js';
 
 // biome-ignore lint/complexity/noStaticOnlyClass: <explanation>
 export class Api extends Context.Tag('Api')<
@@ -12,13 +13,16 @@ export class Api extends Context.Tag('Api')<
   }
 >() {
   static from = (params: RequestParams) =>
-    ApiLive.pipe(Layer.provide(Operation.from(params)));
+    ApiLive.pipe(
+      Layer.provide(Operation.from(params)),
+      Layer.provide(Probe.build())
+    );
 }
 
 export const ApiLive = Layer.effect(
   Api,
-  Effect.gen(function* (_) {
-    const operation = yield* _(Operation);
+  Effect.gen(function* () {
+    const operation = yield* Operation;
 
     return {
       handler: (params) =>

@@ -1,5 +1,5 @@
 export class Time {
-  now = () => new Date();
+  private now = () => new Date();
 
   static now = () => new Time().now();
 }

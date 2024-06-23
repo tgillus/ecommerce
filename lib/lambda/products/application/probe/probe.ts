@@ -19,8 +19,8 @@ export class Probe extends Context.Tag('Probe')<
 
 export const ProbeLive = Layer.effect(
   Probe,
-  Effect.gen(function* (_) {
-    const logger = yield* _(AppLogger);
+  Effect.gen(function* () {
+    const logger = yield* AppLogger;
 
     return {
       validRequestReceived: () => logger.info('Valid request received.'),
@@ -35,3 +35,12 @@ export const ProbeLive = Layer.effect(
     };
   })
 );
+
+export const ProbeTest = Layer.succeed(Probe, {
+  invalidRequestReceived: () => Effect.void,
+  validRequestReceived: () => Effect.void,
+  argsValidationSucceeded: () => Effect.void,
+  argsValidationFailed: () => Effect.void,
+  savingProductToDynamoSucceeded: () => Effect.void,
+  savingProductToDynamoFailed: () => Effect.void,
+});

@@ -18,7 +18,7 @@ export class AppLogger extends Context.Tag('AppLogger')<
 export const AppLoggerLive = Layer.succeed(AppLogger, {
   error: (error: Error) =>
     Effect.logError(error.message).pipe(
-      Effect.flatMap(() => Effect.logError(error.stack))
+      Effect.andThen(() => Effect.logError(error.stack))
     ),
   info: (message: string) => Effect.log(message),
 });

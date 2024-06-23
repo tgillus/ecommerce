@@ -23,7 +23,7 @@ export class Client {
   select = (params: SelectObjectContentCommandInput) =>
     Effect.tryPromise(() =>
       this.client.send(new SelectObjectContentCommand(params))
-    ).pipe(Effect.flatMap(this.selectOutput));
+    ).pipe(Effect.andThen(this.selectOutput));
 
   private selectOutput = ({
     $metadata: { httpStatusCode },
@@ -33,7 +33,7 @@ export class Client {
       Match.when(200, () =>
         Option.fromNullable(Payload).pipe(
           Either.fromOption(() => new Error('Payload not found')),
-          Effect.flatMap(this.selectOutputPayload)
+          Effect.andThen(this.selectOutputPayload)
         )
       ),
       Match.orElse(() =>
@@ -66,7 +66,7 @@ export class Client {
             )
           )
         ),
-        Effect.map((chunks) =>
+        Effect.andThen((chunks) =>
           Buffer.concat(chunks.pipe(Chunk.toReadonlyArray)).toString('utf8')
         )
       );

@@ -17,9 +17,9 @@ export class ProductService extends Context.Tag('ProductService')<
 
 export const ProductServiceLive = Layer.effect(
   ProductService,
-  Effect.gen(function* (_) {
-    const dynamoGateway = yield* _(DynamoGateway);
-    const probe = yield* _(Probe);
+  Effect.gen(function* () {
+    const dynamoGateway = yield* DynamoGateway;
+    const probe = yield* Probe;
 
     return {
       create: ({ product }: CreateArgs) =>

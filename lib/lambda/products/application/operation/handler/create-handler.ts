@@ -6,8 +6,8 @@ import { Handler } from './handler.js';
 
 export const CreateHandlerLive = Layer.effect(
   Handler,
-  Effect.gen(function* (_) {
-    const productService = yield* _(ProductService);
+  Effect.gen(function* () {
+    const productService = yield* ProductService;
 
     return {
       exec: (args: CreateArgs) =>
@@ -17,3 +17,8 @@ export const CreateHandlerLive = Layer.effect(
     };
   })
 );
+
+export const CreateHandlerTest = Layer.succeed(Handler, {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  exec: (_args: CreateArgs) => Effect.void,
+});
