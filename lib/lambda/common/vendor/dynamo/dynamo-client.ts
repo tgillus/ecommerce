@@ -10,15 +10,15 @@ import type { UnknownException } from 'effect/Cause';
 export class DynamoClient extends Context.Tag('DynamoClient')<
   DynamoClient,
   {
-    put: (
+    put(
       tableName: string,
       item: Record<string, string>
-    ) => Effect.Effect<PutCommandOutput, UnknownException, never>;
+    ): Effect.Effect<PutCommandOutput, UnknownException, never>;
   }
 >() {}
 
 export const DynamoClientLive = Layer.succeed(DynamoClient, {
-  put: (tableName: string, item: Record<string, string>) => {
+  put(tableName: string, item: Record<string, string>) {
     const client = DynamoDBDocumentClient.from(new DynamoDBClient());
 
     return Effect.tryPromise(() =>

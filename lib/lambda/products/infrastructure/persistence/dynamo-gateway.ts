@@ -14,10 +14,11 @@ export class DynamoGateway extends Context.Tag('DynamoGateway')<
     create: (product: Product) => Effect.Effect<void, UnknownException>;
   }
 >() {
-  static build = () =>
-    DynamoGatewayLive.pipe(
+  static build() {
+    return DynamoGatewayLive.pipe(
       Layer.provide(Layer.merge(DynamoClientLive, ProductMapperLive))
     );
+  }
 }
 
 export const DynamoGatewayLive = Layer.effect(
@@ -28,10 +29,7 @@ export const DynamoGatewayLive = Layer.effect(
     const productMapper = yield* ProductMapper;
 
     return {
-      create: (product) => {
-        const item = productMapper.map(product);
-        return client.put(tableName, item);
-      },
+      create: (product) => client.put(tableName, productMapper.map(product)),
     };
   })
 );

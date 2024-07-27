@@ -9,10 +9,11 @@ export class AppLogger extends Context.Tag('AppLogger')<
     info: (message: string) => Effect.Effect<void>;
   }
 >() {
-  static build = () =>
-    AppLoggerLive.pipe(
+  static build() {
+    return AppLoggerLive.pipe(
       Layer.provide(Logger.replace(Logger.defaultLogger, jsonLogger))
     );
+  }
 }
 
 export const AppLoggerLive = Layer.succeed(AppLogger, {
