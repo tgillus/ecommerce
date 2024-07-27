@@ -25,45 +25,24 @@ export const ProbeLive = Layer.effect(
     const logger = yield* AppLogger;
 
     return {
-      validRequestReceived() {
-        return logger.info('Valid request received.');
-      },
-      invalidRequestReceived() {
-        return logger.error(new Error('Invalid request received.'));
-      },
-      argsValidationSucceeded() {
-        return logger.info('Arguments validation succeeded.');
-      },
-      argsValidationFailed(error) {
-        return logger.error(error);
-      },
-      savingProductToDynamoSucceeded() {
-        return logger.info('Saving product to dynamo succeeded.');
-      },
-      savingProductToDynamoFailed(error: Error) {
-        return logger.error(error);
-      },
+      validRequestReceived: () => logger.info('Valid request received.'),
+      invalidRequestReceived: () =>
+        logger.error(new Error('Invalid request received.')),
+      argsValidationSucceeded: () =>
+        logger.info('Arguments validation succeeded.'),
+      argsValidationFailed: (error) => logger.error(error),
+      savingProductToDynamoSucceeded: () =>
+        logger.info('Saving product to dynamo succeeded.'),
+      savingProductToDynamoFailed: (error: Error) => logger.error(error),
     };
   })
 );
 
 export const ProbeTest = Layer.succeed(Probe, {
-  invalidRequestReceived() {
-    return Effect.void;
-  },
-  validRequestReceived() {
-    return Effect.void;
-  },
-  argsValidationSucceeded() {
-    return Effect.void;
-  },
-  argsValidationFailed() {
-    return Effect.void;
-  },
-  savingProductToDynamoSucceeded() {
-    return Effect.void;
-  },
-  savingProductToDynamoFailed() {
-    return Effect.void;
-  },
+  invalidRequestReceived: () => Effect.void,
+  validRequestReceived: () => Effect.void,
+  argsValidationSucceeded: () => Effect.void,
+  argsValidationFailed: () => Effect.void,
+  savingProductToDynamoSucceeded: () => Effect.void,
+  savingProductToDynamoFailed: () => Effect.void,
 });
