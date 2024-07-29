@@ -26,6 +26,7 @@ export const AppLoggerLive = Layer.succeed(AppLogger, {
 
 const jsonLogger = Logger.make(
   ({ date, logLevel: { label: _logLevel }, message: msg }) => {
+    // biome-ignore lint/suspicious/noConsoleLog: <explanation>
     globalThis.console.log(
       Inspectable.stringifyCircular({
         _logLevel,
