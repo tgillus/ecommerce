@@ -9,6 +9,7 @@ export class ApiPool extends cognito.UserPool {
   constructor(scope: Construct) {
     super(scope, 'EcommerceApiPool', {
       removalPolicy: cdk.RemovalPolicy.DESTROY,
+      userPoolName: 'EcommerceApi',
     });
 
     const { readScope, writeScope } = new ResourceServer({

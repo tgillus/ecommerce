@@ -6,6 +6,6 @@ export default defineConfig({
       include: ['lib/**/*.ts'],
       exclude: ['lib/**/vendor/**'],
     },
-    globalSetup: './test/global-setup.ts',
+    globalSetup: './test/e2e/global-setup.ts',
   },
 });
