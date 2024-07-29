@@ -7,6 +7,7 @@ import { Package } from '../../vendor/pkg/package.js';
 
 interface ProductsResourcesProps {
   readonly api: apigw.IRestApi;
+  readonly authorizer: apigw.IAuthorizer;
   readonly productsTable: dynamo.ITableV2;
 }
 
@@ -14,7 +15,7 @@ export class ProductsResouces extends Construct {
   constructor(
     scope: Construct,
     id: string,
-    { api, productsTable }: ProductsResourcesProps
+    { api, authorizer, productsTable }: ProductsResourcesProps
   ) {
     super(scope, id);
 
@@ -29,10 +30,18 @@ export class ProductsResouces extends Construct {
     const integration = new apigw.LambdaIntegration(handler);
 
     const products = api.root.addResource('products');
-    products.addMethod('POST', integration);
+    products.addMethod('POST', integration, {
+      authorizer,
+      authorizationType: apigw.AuthorizationType.COGNITO,
+      authorizationScopes: ['EcommerceApiResourceService/ecommerceapi.write'],
+    });
 
     const product = products.addResource('{productId}');
-    product.addMethod('GET', integration);
+    product.addMethod('GET', integration, {
+      authorizer,
+      authorizationType: apigw.AuthorizationType.COGNITO,
+      authorizationScopes: ['EcommerceApiResourceService/ecommerceapi.read'],
+    });
 
     productsTable.grantReadWriteData(handler);
   }

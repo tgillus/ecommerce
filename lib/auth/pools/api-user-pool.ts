@@ -5,7 +5,7 @@ import { TestPoolClient } from '../clients/test-pool-client.js';
 import { ResourceServer } from '../resource-servers/resource-server.js';
 import { PoolDomain } from './domains/pool-domain.js';
 
-export class ApiPool extends cognito.UserPool {
+export class ApiUserPool extends cognito.UserPool {
   constructor(scope: Construct) {
     super(scope, 'EcommerceApiPool', {
       removalPolicy: cdk.RemovalPolicy.DESTROY,

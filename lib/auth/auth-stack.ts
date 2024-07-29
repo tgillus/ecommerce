@@ -1,11 +1,14 @@
 import * as cdk from 'aws-cdk-lib';
+import type * as cognito from 'aws-cdk-lib/aws-cognito';
 import type { Construct } from 'constructs';
-import { ApiPool } from './pools/api-pool.js';
+import { ApiUserPool } from './pools/api-user-pool.js';
 
 export class AuthStack extends cdk.Stack {
+  readonly apiUserPool: cognito.IUserPool;
+
   constructor(scope: Construct, id: string, props: cdk.StackProps) {
     super(scope, id, props);
 
-    new ApiPool(this);
+    this.apiUserPool = new ApiUserPool(this);
   }
 }

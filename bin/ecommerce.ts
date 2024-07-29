@@ -15,11 +15,12 @@ const { productsTable } = new DynamoStack(app, 'EcommerceDynamoStack', {
   env,
 });
 
-new ApiStack(app, 'EcommerceApiStack', {
+const { apiUserPool } = new AuthStack(app, 'EcommerceAuthStack', {
   env,
-  productsTable,
 });
 
-new AuthStack(app, 'EcommerceAuthStack', {
+new ApiStack(app, 'EcommerceApiStack', {
+  cognitoUserPools: [apiUserPool],
   env,
+  productsTable,
 });
