@@ -1,4 +1,3 @@
-import 'dotenv/config';
 import { Effect } from 'effect';
 import type { GlobalSetupContext } from 'vitest/node';
 import { ApiGateway } from '../../lib/infrastructure/api-gateway/api-gateway.js';
