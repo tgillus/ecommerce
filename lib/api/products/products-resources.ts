@@ -14,10 +14,9 @@ interface ProductsResourcesProps {
 export class ProductsResouces extends Construct {
   constructor(
     scope: Construct,
-    id: string,
     { api, authorizer, productsTable }: ProductsResourcesProps
   ) {
-    super(scope, id);
+    super(scope, 'ProductsResources');
 
     const handler = new nodejs.NodejsFunction(this, 'ApiHandler', {
       entry: `${Package.rootDir()}/lib/lambda/products/api/lambda.ts`,

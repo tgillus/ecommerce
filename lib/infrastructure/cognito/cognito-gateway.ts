@@ -3,14 +3,11 @@ import { NoSuchElementException } from 'effect/Cause';
 import { Client } from '../../vendor/aws/cognito/client.js';
 
 export class CognitoGateway {
-  private readonly userPoolName = 'EcommerceApi';
-  private readonly clientName = 'Test';
-
   constructor(private readonly client: Client) {}
 
-  credentials() {
+  credentials(userPoolName: string, userPoolClientName: string) {
     return Effect.Do.pipe(
-      Effect.bind('userPool', () => this.client.userPool(this.userPoolName)),
+      Effect.bind('userPool', () => this.client.userPool(userPoolName)),
       Effect.bind('userPoolId', ({ userPool: { Id } }) =>
         Effect.fromNullable(Id)
       ),
@@ -18,11 +15,11 @@ export class CognitoGateway {
         'NoSuchElementException',
         () =>
           new NoSuchElementException(
-            `user pool id for ${this.userPoolName} not found`
+            `user pool id for ${userPoolName} not found`
           )
       ),
       Effect.bind('userPoolClient', ({ userPoolId }) =>
-        this.client.userPoolClient(userPoolId, this.clientName)
+        this.client.userPoolClient(userPoolId, userPoolClientName)
       ),
       Effect.bind('clientId', ({ userPoolClient: { ClientId } }) =>
         Effect.fromNullable(ClientId)
@@ -31,7 +28,7 @@ export class CognitoGateway {
         'NoSuchElementException',
         () =>
           new NoSuchElementException(
-            `client id for ${this.clientName} not found`
+            `client id for ${userPoolClientName} not found`
           )
       ),
       Effect.bind('userPoolClientDetails', ({ clientId, userPoolId }) =>
@@ -46,12 +43,13 @@ export class CognitoGateway {
         'NoSuchElementException',
         () =>
           new NoSuchElementException(
-            `client secret for ${this.clientName} not found`
+            `client secret for ${userPoolClientName} not found`
           )
       ),
-      Effect.andThen(({ clientId, clientSecret }) => ({
+      Effect.andThen(({ clientId, clientSecret, userPoolId }) => ({
         clientId,
         clientSecret,
+        userPoolId,
       }))
     );
   }

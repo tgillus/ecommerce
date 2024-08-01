@@ -1,16 +1,18 @@
 import * as cognito from 'aws-cdk-lib/aws-cognito';
+import type { Config } from '../../../infrastructure/config/config.js';
 
 interface PoolDomainProps {
-  readonly pool: cognito.IUserPool;
+  readonly config: Config;
+  readonly userPool: cognito.IUserPool;
 }
 
 export class PoolDomain extends cognito.UserPoolDomain {
-  constructor({ pool }: PoolDomainProps) {
-    super(pool, 'EcommerceApiDomain', {
-      userPool: pool,
+  constructor({ config, userPool }: PoolDomainProps) {
+    super(userPool, 'EcommerceApiDomain', {
       cognitoDomain: {
-        domainPrefix: 'ecommerce-api',
+        domainPrefix: config.settings.aws.cognito.domainPrefix,
       },
+      userPool,
     });
   }
 }
