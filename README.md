@@ -1,23 +1,72 @@
-# Welcome to your CDK TypeScript project
+# E-Commerce
 
-This is a blank project for CDK development with TypeScript.
+This project serves as a playground to explore event-based APIs and microservices.
 
-The `cdk.json` file tells the CDK Toolkit how to execute your app.
+This project is designed for deployment to [Amazon Web Services (AWS)](https://aws.amazon.com/) cloud. The [AWS Cloud Development Kit (CDK)](https://aws.amazon.com/cdk/) is used to create all of the necessary AWS cloud infrastructure to run the project.
 
-## Useful commands
+## Prerequisites
 
-- `npm run build` compile typescript to js
-- `npm run watch` watch for changes and compile
-- `npm run test` perform the jest unit tests
-- `npx cdk deploy` deploy this stack to your default AWS account/region
-- `npx cdk diff` compare deployed stack with current state
-- `npx cdk synth` emits the synthesized CloudFormation template
+Ensure the following requirements are met prior to usage:
 
-## Request OAuth Access Token
+- Node.js 18 or higher
+- An active [Amazon Web Services (AWS)](https://aws.amazon.com/) account
+
+## Setup
+
+1. Clone the repository:
 
 ```sh
-curl -X POST \
--u '<client id>:<client secret>' \
--d 'grant_type=client_credentials' \
-https://<domain>.auth.us-east-1.amazoncognito.com/oauth2/token
+git clone git@github.com:tgillus/ecommerce.git
+```
+
+2. Install the project dependencies:
+
+```sh
+cd ecommerce
+npm install
+```
+
+3. Create a `.env` in the root of the project based on the `.env.example` file and add values for each of the environment variables:
+
+```sh
+cp .env.example .env
+```
+
+The environment variables have place holder values that need to be replaced with actual values.
+
+**NOTE**: The `.env` file is used to store sensitive information such as OAuth client id and client secret values. Do not commit the `.env` file to source control.
+
+## Commands
+
+| Command               | Description                                                 |
+| --------------------- | ----------------------------------------------------------- |
+| `npm run build`       | Check for TypeScript errors.                                |
+| `npm run watch`       | Watch for changes and check for TypeScript errors.          |
+| `npm run test`        | Execute unit tests.                                         |
+| `npm run cdk deploy`  | Deploy a CDK stack to AWS.                                  |
+| `npm run cdk diff`    | Compare a deployed stack with current state.                |
+| `npm run cdk destroy` | Delete a CDK stack (and its associated resources) from AWS. |
+| `npm run cdk synth`   | Emit synethesize CloudFormation template for a CDK stack.   |
+| `npm run format`      | Format source files.                                        |
+| `npm run lint`        | Run linter against source files.                            |
+| `npm run lint:fix`    | Lint source files and fix issues disovered by the linter.   |
+
+## Command Examples
+
+### Deploy AWS Resources
+
+```sh
+npm run cdk deploy -- --all
+```
+
+### Test the Project by Hitting the API via Integration Tests
+
+```sh
+npm run test:e2e
+```
+
+### Delete AWS Resources
+
+```sh
+npm run cdk destroy -- --all --force
 ```
