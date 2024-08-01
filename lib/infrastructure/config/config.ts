@@ -10,7 +10,12 @@ interface ApiSettings {
 }
 
 interface AwsSettings {
+  readonly apiGateway: ApiGatewaySettings;
   readonly cognito: CognitoSettings;
+}
+
+interface ApiGatewaySettings {
+  readonly region: string;
 }
 
 interface CognitoSettings {
@@ -30,6 +35,9 @@ export class Config {
         name: env.API_NAME,
       },
       aws: {
+        apiGateway: {
+          region: env.AWS_API_GATEWAY_REGION,
+        },
         cognito: {
           domainPrefix: env.AWS_COGNITO_DOMAIN_PREFIX,
           issuerHostname: env.AWS_COGNITO_ISSUER_HOSTNAME,

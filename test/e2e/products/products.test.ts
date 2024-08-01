@@ -2,11 +2,10 @@ import { faker } from '@faker-js/faker';
 import { request, spec } from 'pactum';
 import { describe, inject, test } from 'vitest';
 
-request.setBaseUrl(
-  `https://${process.env.AWS_API_GATEWAY_ID}.execute-api.${process.env.AWS_API_GATEWAY_REGION}.amazonaws.com/prod`
-);
-
 const accessToken = inject('accessToken');
+const apiBaseUrl = inject('apiBaseUrl');
+
+request.setBaseUrl(apiBaseUrl);
 
 describe('POST /products', () => {
   test('saves new products', async () => {

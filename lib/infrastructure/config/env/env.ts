@@ -3,6 +3,7 @@ import { cleanEnv, host, str } from 'envalid';
 
 export const env = cleanEnv(process.env, {
   API_NAME: str(),
+  AWS_API_GATEWAY_REGION: str(),
   AWS_COGNITO_DOMAIN_PREFIX: str(),
   AWS_COGNITO_ISSUER_HOSTNAME: host(),
   AWS_COGNITO_RESOURCE_SERVER_IDENTIFIER: str(),
