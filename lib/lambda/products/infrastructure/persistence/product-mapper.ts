@@ -1,20 +1,20 @@
 import { Context, Layer } from 'effect';
-import { IdGenerator } from '../../../../vendor/id/id-generator.js';
-import { Time } from '../../../../vendor/type/time.js';
-import type { Product } from '../../domain/model/product.js';
+import type { ProductDto } from '../../domain/dto/product-dto.js';
 
 export class ProductMapper extends Context.Tag('ProductMapper')<
   ProductMapper,
   {
-    map(product: Product): Record<string, string>;
+    map(product: ProductDto): Record<string, string>;
   }
 >() {}
 
 export const ProductMapperLive = Layer.succeed(ProductMapper, {
-  map: ({ description, name, price }) => ({
-    PK: `PRODUCT#${IdGenerator.generate()}`,
-    SK: `PRODUCT#${Time.now().toISOString()}`,
+  map: ({ createdAt, description, id, name, price }) => ({
+    PK: `PRODUCT#${id}`,
+    SK: `PRODUCT#${createdAt.toISOString()}`,
+    CreatedAt: createdAt.toISOString(),
     Description: description,
+    Id: id,
     Name: name,
     Price: price,
   }),

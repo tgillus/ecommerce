@@ -1,8 +1,8 @@
 import { Context, Effect, Layer } from 'effect';
 import { ServiceError } from '../../../../common/application/error/service-error.js';
 import { ProductService } from '../../service/product-service.js';
-import type { CreateArgs } from '../create/create-args.js';
 import type { Handler } from '../operation.js';
+import type { CreateArgs } from './create-args.js';
 
 export class CreateHandler extends Context.Tag('Handler')<
   CreateHandler,
@@ -16,14 +16,15 @@ export const CreateHandlerLive = Layer.effect(
 
     return {
       exec: (args: CreateArgs) =>
-        productService
-          .create(args)
-          .pipe(Effect.mapError((error) => new ServiceError(error))),
+        productService.create(args).pipe(
+          Effect.mapError((error) => new ServiceError(error)),
+          Effect.andThen((id) => ({ id }))
+        ),
     };
   })
 );
 
 export const CreateHandlerTest = Layer.succeed(CreateHandler, {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  exec: (_args: CreateArgs) => Effect.void,
+  exec: (_args: CreateArgs) => Effect.succeed({ id: 'foo' }),
 });

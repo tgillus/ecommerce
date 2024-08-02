@@ -34,6 +34,7 @@ export const ApiLive = Layer.effect(
               Match.value,
               Match.tags({
                 InvalidOperationError: Response.fail,
+                NotFoundError: Response.notFound,
                 ServiceError: Response.fail,
                 ValidationError: Response.fail,
               }),

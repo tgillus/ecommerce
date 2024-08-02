@@ -34,5 +34,5 @@ export const CreateOperationLive = Layer.effect(
 
 export const CreateOperationTest = Layer.succeed(Operation, {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  exec: (_params: RequestParams) => Effect.void,
+  exec: (_params: RequestParams) => Effect.succeed({ productId: 'foo' }),
 });

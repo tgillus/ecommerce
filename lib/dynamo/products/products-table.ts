@@ -15,7 +15,6 @@ export class ProductsTable extends dynamo.TableV2 {
       ],
       partitionKey: { name: 'PK', type: dynamo.AttributeType.STRING },
       removalPolicy: cdk.RemovalPolicy.DESTROY,
-      sortKey: { name: 'SK', type: dynamo.AttributeType.STRING },
     });
   }
 }

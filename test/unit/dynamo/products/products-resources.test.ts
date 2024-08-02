@@ -19,10 +19,6 @@ test('creates global tables', () => {
           AttributeType: 'S',
         },
         {
-          AttributeName: 'SK',
-          AttributeType: 'S',
-        },
-        {
           AttributeName: 'GSI1PK',
           AttributeType: 'S',
         },
@@ -54,10 +50,6 @@ test('creates global tables', () => {
         {
           AttributeName: 'PK',
           KeyType: 'HASH',
-        },
-        {
-          AttributeName: 'SK',
-          KeyType: 'RANGE',
         },
       ],
     },

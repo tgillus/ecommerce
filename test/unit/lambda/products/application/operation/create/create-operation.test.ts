@@ -25,11 +25,15 @@ afterEach(() => {
 
 test('builds an valid operation layer', () => {
   td.when(CreateOperation.build()).thenReturn(CreateOperationTest);
-  const params = new RequestParams({ body: 'foo', httpMethod: 'POST' });
+  const params = new RequestParams({
+    body: 'foo',
+    httpMethod: 'POST',
+    pathParameters: { productId: 'bar' },
+  });
   const operation = OpFactory.from(params).pipe(Layer.provide(ProbeTest));
   const runnable = Effect.provide(program, operation);
 
   const result = Effect.runSyncExit(runnable);
 
-  expect(result).toStrictEqual(Exit.void);
+  expect(result).toStrictEqual(Exit.succeed({ productId: 'foo' }));
 });

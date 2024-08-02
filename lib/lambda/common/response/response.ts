@@ -4,19 +4,28 @@ import type { ResponseDetails } from './response-details.js';
 export class Response {
   constructor(private readonly details: ResponseDetails) {}
 
-  produce(): APIGatewayProxyResult {
+  produce() {
     const { body, statusCode } = this.details;
 
     return {
       body,
       statusCode,
-    };
+    } satisfies APIGatewayProxyResult;
   }
 
-  static success() {
+  static success(data: Record<string, unknown>) {
     const details = {
-      body: JSON.stringify({ message: 'Success' }),
+      body: JSON.stringify({ message: 'Success', ...data }),
       statusCode: 200,
+    } satisfies ResponseDetails;
+
+    return new Response(details).produce();
+  }
+
+  static notFound() {
+    const details = {
+      body: JSON.stringify({ message: 'Not found' }),
+      statusCode: 404,
     } satisfies ResponseDetails;
 
     return new Response(details).produce();

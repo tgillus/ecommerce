@@ -9,8 +9,14 @@ export class RequestParams {
   }
 
   get httpMethod() {
-    return this.event.httpMethod;
+    return this.event.httpMethod.toUpperCase();
+  }
+
+  get parameters() {
+    return {
+      ...this.event.pathParameters,
+    };
   }
 }
 
-type Event = Pick<APIGatewayEvent, 'body' | 'httpMethod'>;
+type Event = Pick<APIGatewayEvent, 'body' | 'httpMethod' | 'pathParameters'>;

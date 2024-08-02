@@ -19,7 +19,11 @@ afterEach(() => {
 });
 
 test('builds an invalid operation layer', () => {
-  const params = new RequestParams({ body: 'foo', httpMethod: 'bar' });
+  const params = new RequestParams({
+    body: 'foo',
+    httpMethod: 'bar',
+    pathParameters: { productId: 'bar' },
+  });
   const operation = OpFactory.from(params).pipe(Layer.provide(ProbeTest));
   const runnable = Effect.provide(program, operation);
 

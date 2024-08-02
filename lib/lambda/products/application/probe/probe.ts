@@ -12,6 +12,8 @@ export class Probe extends Context.Tag('Probe')<
     argsValidationFailed(error: ValidationError): Effect.Effect<void>;
     savingProductToDynamoSucceeded(): Effect.Effect<void>;
     savingProductToDynamoFailed(error: Error): Effect.Effect<void>;
+    readingProductFromDynamoSucceeded(): Effect.Effect<void>;
+    readingProductFromDynamoFailed(error: Error): Effect.Effect<void>;
   }
 >() {
   static build() {
@@ -34,6 +36,9 @@ export const ProbeLive = Layer.effect(
       savingProductToDynamoSucceeded: () =>
         logger.info('Saving product to dynamo succeeded.'),
       savingProductToDynamoFailed: (error: Error) => logger.error(error),
+      readingProductFromDynamoSucceeded: () =>
+        logger.info('Reading product from dynamo succeeded.'),
+      readingProductFromDynamoFailed: (error: Error) => logger.error(error),
     };
   })
 );
@@ -45,4 +50,6 @@ export const ProbeTest = Layer.succeed(Probe, {
   argsValidationFailed: () => Effect.void,
   savingProductToDynamoSucceeded: () => Effect.void,
   savingProductToDynamoFailed: () => Effect.void,
+  readingProductFromDynamoSucceeded: () => Effect.void,
+  readingProductFromDynamoFailed: () => Effect.void,
 });
