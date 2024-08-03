@@ -1,5 +1,6 @@
 import { Config, Context, Effect, Layer } from 'effect';
 import type { UnknownException } from 'effect/Cause';
+import { Time } from '../../../../vendor/type/time.js';
 import { NotFoundError } from '../../../common/application/error/not-found-error.js';
 import {
   DynamoClient,
@@ -41,7 +42,7 @@ const DynamoGatewayLive = Layer.effect(
             () => new NotFoundError('product not found')
           ),
           Effect.andThen((item) => {
-            const createdAt = new Date();
+            const createdAt = Time.now();
             createdAt.setTime(Date.parse(item.CreatedAt));
 
             return new ProductDto(

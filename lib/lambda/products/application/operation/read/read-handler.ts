@@ -1,4 +1,5 @@
 import { Context, Effect, Layer } from 'effect';
+import { Time } from '../../../../../vendor/type/time.js';
 import { ServiceError } from '../../../../common/application/error/service-error.js';
 import { ProductDto } from '../../../domain/dto/product-dto.js';
 import { ProductService } from '../../service/product-service.js';
@@ -37,7 +38,7 @@ export const ReadHandlerTest = Layer.succeed(ReadHandler, {
           price: '9.99',
         },
         'baz',
-        new Date()
+        Time.now()
       ).toJSON()
     ),
 });

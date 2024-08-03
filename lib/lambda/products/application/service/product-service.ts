@@ -1,6 +1,7 @@
 import { Context, Effect, Layer } from 'effect';
 import { UnknownException } from 'effect/Cause';
 import { IdGenerator } from '../../../../vendor/id/id-generator.js';
+import { Time } from '../../../../vendor/type/time.js';
 import type { NotFoundError } from '../../../common/application/error/not-found-error.js';
 import { ProductDto } from '../../domain/dto/product-dto.js';
 import { DynamoGateway } from '../../infrastructure/persistence/dynamo-gateway.js';
@@ -34,7 +35,7 @@ export const ProductServiceLive = Layer.effect(
         const productId = IdGenerator.generate();
 
         return dynamoGateway
-          .create(new ProductDto(product, productId, new Date()))
+          .create(new ProductDto(product, productId, Time.now()))
           .pipe(
             Effect.tapBoth({
               onFailure: probe.savingProductToDynamoFailed,
@@ -65,7 +66,7 @@ export const ProductServiceSuccessTest = Layer.succeed(ProductService, {
           price: '9.99',
         },
         'baz',
-        new Date()
+        Time.now()
       )
     ),
 });
