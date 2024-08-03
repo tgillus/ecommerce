@@ -8,7 +8,9 @@ import {
 } from '@aws-sdk/lib-dynamodb';
 import { Context, Effect, Layer } from 'effect';
 import type { UnknownException } from 'effect/Cause';
+import { Time } from '../../../../vendor/type/time.js';
 
+// biome-ignore lint/complexity/noStaticOnlyClass: <explanation>
 export class DynamoClient extends Context.Tag('DynamoClient')<
   DynamoClient,
   {
@@ -21,14 +23,18 @@ export class DynamoClient extends Context.Tag('DynamoClient')<
       item: Record<string, string>
     ): Effect.Effect<PutCommandOutput, UnknownException>;
   }
->() {}
+>() {
+  static build() {
+    return DynamoClientLive;
+  }
+}
 
 export const DynamoClientLive = Layer.sync(DynamoClient, () => {
   const client = DynamoDBDocumentClient.from(new DynamoDBClient());
 
   return {
-    get(tableName: string, pk: string) {
-      return Effect.tryPromise(() =>
+    get: (tableName: string, pk: string) =>
+      Effect.tryPromise(() =>
         client.send(
           new GetCommand({
             Key: {
@@ -37,12 +43,28 @@ export const DynamoClientLive = Layer.sync(DynamoClient, () => {
             TableName: tableName,
           })
         )
-      );
-    },
-    put(tableName: string, item: Record<string, string>) {
-      return Effect.tryPromise(() =>
+      ),
+    put: (tableName: string, item: Record<string, string>) =>
+      Effect.tryPromise(() =>
         client.send(new PutCommand({ TableName: tableName, Item: item }))
-      );
-    },
+      ),
   };
+});
+
+export const DynamoClientTest = Layer.succeed(DynamoClient, {
+  get: (_tableName: string, _pk: string) =>
+    Effect.succeed({
+      $metadata: {},
+      Item: {
+        CreatedAt: Time.now().toISOString(),
+        Description: 'foo',
+        Id: 'bar',
+        Name: 'baz',
+        Price: '9.99',
+      },
+    }),
+  put: (_tableName: string, _item: Record<string, string>) =>
+    Effect.succeed({
+      $metadata: {},
+    }),
 });
