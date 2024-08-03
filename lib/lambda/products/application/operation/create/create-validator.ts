@@ -29,7 +29,13 @@ export const CreateValidatorLive = Layer.effect(
             )
           ),
           Effect.mapError(
-            (error) => new ValidationError(formatErrorSync(error))
+            (error) =>
+              new ValidationError(
+                formatErrorSync(error).map(({ message, path }) => ({
+                  message,
+                  path,
+                }))
+              )
           ),
           Effect.tapBoth({
             onFailure: probe.argsValidationFailed,
