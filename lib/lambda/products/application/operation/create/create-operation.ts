@@ -15,7 +15,7 @@ export class CreateOperation {
     );
 }
 
-export const CreateOperationLive = Layer.effect(
+const CreateOperationLive = Layer.effect(
   Operation,
   Effect.gen(function* () {
     const validator = yield* CreateValidator;

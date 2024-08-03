@@ -1,6 +1,5 @@
 import { Effect, Layer } from 'effect';
 import type { RequestParams } from '../../../../common/request/request-params.js';
-import { ProductDto } from '../../../domain/dto/product-dto.js';
 import { Probe } from '../../probe/probe.js';
 import { ProductService } from '../../service/product-service.js';
 import { Operation } from '../operation.js';
@@ -16,7 +15,7 @@ export class ReadOperation {
     );
 }
 
-export const ReadOperationLive = Layer.effect(
+const ReadOperationLive = Layer.effect(
   Operation,
   Effect.gen(function* () {
     const validator = yield* ReadValidator;
@@ -33,19 +32,3 @@ export const ReadOperationLive = Layer.effect(
     };
   })
 );
-
-export const ReadOperationTest = Layer.succeed(Operation, {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  exec: (_params: RequestParams) =>
-    Effect.succeed(
-      new ProductDto(
-        {
-          description: 'foo',
-          name: 'bar',
-          price: '9.99',
-        },
-        'baz',
-        new Date()
-      ).toJSON()
-    ),
-});

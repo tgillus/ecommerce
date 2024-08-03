@@ -21,7 +21,7 @@ export class Api extends Context.Tag('Api')<
   }
 }
 
-export const ApiLive = Layer.effect(
+const ApiLive = Layer.effect(
   Api,
   Effect.gen(function* () {
     const operation = yield* Operation;

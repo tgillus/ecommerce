@@ -25,7 +25,7 @@ export class DynamoGateway extends Context.Tag('DynamoGateway')<
   }
 }
 
-export const DynamoGatewayLive = Layer.effect(
+const DynamoGatewayLive = Layer.effect(
   DynamoGateway,
   Effect.gen(function* () {
     const tableName = yield* Config.string('PRODUCTS_TABLE_NAME');

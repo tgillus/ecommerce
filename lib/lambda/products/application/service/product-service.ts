@@ -23,7 +23,7 @@ export class ProductService extends Context.Tag('ProductService')<
   }
 }
 
-export const ProductServiceLive = Layer.effect(
+const ProductServiceLive = Layer.effect(
   ProductService,
   Effect.gen(function* () {
     const dynamoGateway = yield* DynamoGateway;

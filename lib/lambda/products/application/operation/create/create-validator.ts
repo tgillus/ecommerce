@@ -44,20 +44,7 @@ export const CreateValidatorLive = Layer.effect(
   })
 );
 
-export const CreateValidatorTest = Layer.succeed(CreateValidator, {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  validate: (_params: RequestParams) =>
-    Effect.succeed({
-      event: ProductEvent.CREATE_PRODUCT,
-      product: {
-        description: 'foo',
-        name: 'bar',
-        price: '9.99',
-      },
-    }),
-});
-
-export const CreateProductArgsSchema = S.Struct({
+const CreateProductArgsSchema = S.Struct({
   description: S.String,
   name: S.String,
   price: S.String,

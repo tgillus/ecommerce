@@ -38,15 +38,6 @@ export const ReadValidatorLive = Layer.effect(
   })
 );
 
-export const ReadValidatorTest = Layer.succeed(ReadValidator, {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  validate: (_params: RequestParams) =>
-    Effect.succeed({
-      event: ProductEvent.READ_PRODUCT,
-      productId: 'foo',
-    }),
-});
-
-export const ReadProductArgsSchema = S.Struct({
+const ReadProductArgsSchema = S.Struct({
   productId: S.String,
 });

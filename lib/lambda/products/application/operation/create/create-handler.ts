@@ -23,8 +23,3 @@ export const CreateHandlerLive = Layer.effect(
     };
   })
 );
-
-export const CreateHandlerTest = Layer.succeed(CreateHandler, {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  exec: (_args: CreateArgs) => Effect.succeed({ id: 'foo' }),
-});
