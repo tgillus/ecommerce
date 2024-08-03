@@ -16,6 +16,24 @@ const program = (params: RequestParams) =>
     return yield* validator.validate(params);
   });
 
+test('builds a create validator', async () => {
+  const productId = 'foo';
+  const params = new RequestParams({
+    body: null,
+    httpMethod: 'GET',
+    pathParameters: { productId },
+  });
+  const runnable = program(params).pipe(
+    Effect.provide(ReadValidator.build()),
+    Effect.provide(ProbeTest)
+  );
+
+  expect(await Effect.runPromise(runnable)).toEqual({
+    event: ProductEvent.READ_PRODUCT,
+    productId,
+  });
+});
+
 test('validates read product params', async () => {
   const productId = 'foo';
   const params = new RequestParams({

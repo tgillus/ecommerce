@@ -9,7 +9,6 @@ import {
   CreateValidatorLive,
 } from '../../../../../../../lib/lambda/products/application/operation/create/create-validator.js';
 import { ProbeTest } from '../../../../../../../lib/lambda/products/application/probe/probe.js';
-import { ProductServiceSuccessTest } from '../../../../../../../lib/lambda/products/application/service/product-service.js';
 import type { Product } from '../../../../../../../lib/lambda/products/domain/model/product.js';
 
 const program = (params: RequestParams) =>
@@ -17,6 +16,28 @@ const program = (params: RequestParams) =>
     const validator = yield* CreateValidator;
     return yield* validator.validate(params);
   });
+
+test('builds a create validator', async () => {
+  const product = {
+    description: 'foo',
+    name: 'bar',
+    price: '9.99',
+  } satisfies Product;
+  const params = new RequestParams({
+    body: JSON.stringify(product),
+    httpMethod: 'POST',
+    pathParameters: null,
+  });
+  const runnable = program(params).pipe(
+    Effect.provide(CreateValidator.build()),
+    Effect.provide(ProbeTest)
+  );
+
+  expect(await Effect.runPromise(runnable)).toEqual({
+    event: ProductEvent.CREATE_PRODUCT,
+    product,
+  });
+});
 
 test('validates create product params', async () => {
   const product = {
@@ -29,10 +50,7 @@ test('validates create product params', async () => {
     httpMethod: 'POST',
     pathParameters: null,
   });
-  const validator = CreateValidatorLive.pipe(
-    Layer.provide(ProductServiceSuccessTest),
-    Layer.provide(ProbeTest)
-  );
+  const validator = CreateValidatorLive.pipe(Layer.provide(ProbeTest));
   const runnable = Effect.provide(program(params), validator);
 
   expect(await Effect.runPromise(runnable)).toEqual({
@@ -51,10 +69,7 @@ test('requires description', async () => {
     httpMethod: 'POST',
     pathParameters: null,
   });
-  const validator = CreateValidatorLive.pipe(
-    Layer.provide(ProductServiceSuccessTest),
-    Layer.provide(ProbeTest)
-  );
+  const validator = CreateValidatorLive.pipe(Layer.provide(ProbeTest));
   const runnable = Effect.provide(program(params), validator);
 
   assert.deepStrictEqual(
@@ -80,10 +95,7 @@ test('requires name', async () => {
     httpMethod: 'POST',
     pathParameters: null,
   });
-  const validator = CreateValidatorLive.pipe(
-    Layer.provide(ProductServiceSuccessTest),
-    Layer.provide(ProbeTest)
-  );
+  const validator = CreateValidatorLive.pipe(Layer.provide(ProbeTest));
   const runnable = Effect.provide(program(params), validator);
 
   assert.deepStrictEqual(
@@ -109,10 +121,7 @@ test('requires price', async () => {
     httpMethod: 'POST',
     pathParameters: null,
   });
-  const validator = CreateValidatorLive.pipe(
-    Layer.provide(ProductServiceSuccessTest),
-    Layer.provide(ProbeTest)
-  );
+  const validator = CreateValidatorLive.pipe(Layer.provide(ProbeTest));
   const runnable = Effect.provide(program(params), validator);
 
   assert.deepStrictEqual(

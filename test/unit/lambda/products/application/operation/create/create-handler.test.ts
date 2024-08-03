@@ -1,7 +1,8 @@
 import { Effect, Exit, Layer } from 'effect';
 import { UnknownException } from 'effect/Cause';
 import assert from 'node:assert';
-import { expect, test } from 'vitest';
+import * as td from 'testdouble';
+import { afterEach, beforeEach, expect, test } from 'vitest';
 import { ServiceError } from '../../../../../../../lib/lambda/common/application/error/service-error.js';
 import { ProductEvent } from '../../../../../../../lib/lambda/products/application/event/product-event.js';
 import type { CreateArgs } from '../../../../../../../lib/lambda/products/application/operation/create/create-args.js';
@@ -9,7 +10,9 @@ import {
   CreateHandler,
   CreateHandlerLive,
 } from '../../../../../../../lib/lambda/products/application/operation/create/create-handler.js';
+import { ProbeTest } from '../../../../../../../lib/lambda/products/application/probe/probe.js';
 import {
+  ProductService,
   ProductServiceFailureTest,
   ProductServiceSuccessTest,
 } from '../../../../../../../lib/lambda/products/application/service/product-service.js';
@@ -28,6 +31,24 @@ const args = {
     price: '9.99',
   },
 } satisfies CreateArgs;
+
+beforeEach(() => {
+  td.replace(ProductService, 'build');
+});
+
+afterEach(() => {
+  td.reset();
+});
+
+test('builds a create handler', async () => {
+  td.when(ProductService.build()).thenReturn(ProductServiceSuccessTest);
+  const runnable = program(args).pipe(
+    Effect.provide(CreateHandler.build()),
+    Effect.provide(ProbeTest)
+  );
+
+  expect(await Effect.runPromise(runnable)).toStrictEqual({ id: 'foo' });
+});
 
 test('executes create handler', async () => {
   const handler = CreateHandlerLive.pipe(

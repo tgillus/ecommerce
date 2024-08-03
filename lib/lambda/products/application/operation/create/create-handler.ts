@@ -4,10 +4,15 @@ import { ProductService } from '../../service/product-service.js';
 import type { Handler } from '../operation.js';
 import type { CreateArgs } from './create-args.js';
 
+// biome-ignore lint/complexity/noStaticOnlyClass: <explanation>
 export class CreateHandler extends Context.Tag('Handler')<
   CreateHandler,
   Handler
->() {}
+>() {
+  static build() {
+    return CreateHandlerLive.pipe(Layer.provide(ProductService.build()));
+  }
+}
 
 export const CreateHandlerLive = Layer.effect(
   CreateHandler,

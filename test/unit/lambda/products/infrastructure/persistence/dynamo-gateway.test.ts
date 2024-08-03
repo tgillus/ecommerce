@@ -41,13 +41,12 @@ afterEach(() => {
 
 test('builds a dynamo gateway', async () => {
   td.when(DynamoClient.build()).thenReturn(DynamoClientSuccessTest);
-  const dynamoGateway = DynamoGateway.build();
   const program = Effect.gen(function* () {
     const dynamoGateway = yield* DynamoGateway;
     return yield* dynamoGateway.create(product);
   });
   const runnable = program.pipe(
-    Effect.provide(dynamoGateway),
+    Effect.provide(DynamoGateway.build()),
     Effect.withConfigProvider(configProvider)
   );
 

@@ -1,17 +1,15 @@
 import { Effect, Layer } from 'effect';
 import type { RequestParams } from '../../../../common/request/request-params.js';
 import { Probe } from '../../probe/probe.js';
-import { ProductService } from '../../service/product-service.js';
 import { Operation } from '../operation.js';
-import { ReadHandler, ReadHandlerLive } from './read-handler.js';
-import { ReadValidator, ReadValidatorLive } from './read-validator.js';
+import { ReadHandler } from './read-handler.js';
+import { ReadValidator } from './read-validator.js';
 
 // biome-ignore lint/complexity/noStaticOnlyClass: <explanation>
 export class ReadOperation {
   static build = () =>
     ReadOperationLive.pipe(
-      Layer.provide(Layer.merge(ReadValidatorLive, ReadHandlerLive)),
-      Layer.provide(ProductService.build())
+      Layer.provide(Layer.merge(ReadValidator.build(), ReadHandler.build()))
     );
 }
 

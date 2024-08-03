@@ -7,10 +7,15 @@ import { ProductEvent } from '../../event/product-event.js';
 import { Probe } from '../../probe/probe.js';
 import type { Validator } from '../operation.js';
 
+// biome-ignore lint/complexity/noStaticOnlyClass: <explanation>
 export class ReadValidator extends Context.Tag('ReadValidator')<
   ReadValidator,
   Validator
->() {}
+>() {
+  static build() {
+    return ReadValidatorLive;
+  }
+}
 
 export const ReadValidatorLive = Layer.effect(
   ReadValidator,

@@ -6,10 +6,15 @@ import { ProductService } from '../../service/product-service.js';
 import type { Handler } from '../operation.js';
 import type { ReadArgs } from './read-args.js';
 
+// biome-ignore lint/complexity/noStaticOnlyClass: <explanation>
 export class ReadHandler extends Context.Tag('Handler')<
   ReadHandler,
   Handler
->() {}
+>() {
+  static build() {
+    return ReadHandlerLive.pipe(Layer.provide(ProductService.build()));
+  }
+}
 
 export const ReadHandlerLive = Layer.effect(
   ReadHandler,
