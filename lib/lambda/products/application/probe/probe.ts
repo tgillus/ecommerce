@@ -21,7 +21,7 @@ export class Probe extends Context.Tag('Probe')<
   }
 }
 
-export const ProbeLive = Layer.effect(
+const ProbeLive = Layer.effect(
   Probe,
   Effect.gen(function* () {
     const logger = yield* AppLogger;
