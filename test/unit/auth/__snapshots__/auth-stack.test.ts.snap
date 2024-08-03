@@ -1,0 +1,151 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`matches the snapshot 1`] = `
+{
+  "Parameters": {
+    "BootstrapVersion": {
+      "Default": "/cdk-bootstrap/hnb659fds/version",
+      "Description": "Version of the CDK Bootstrap resources in this environment, automatically retrieved from SSM Parameter Store. [cdk:skip]",
+      "Type": "AWS::SSM::Parameter::Value<String>",
+    },
+  },
+  "Resources": {
+    "EcommerceApiPool917914B5": {
+      "DeletionPolicy": "Delete",
+      "Properties": {
+        "AccountRecoverySetting": {
+          "RecoveryMechanisms": [
+            {
+              "Name": "verified_phone_number",
+              "Priority": 1,
+            },
+            {
+              "Name": "verified_email",
+              "Priority": 2,
+            },
+          ],
+        },
+        "AdminCreateUserConfig": {
+          "AllowAdminCreateUserOnly": true,
+        },
+        "EmailVerificationMessage": "The verification code to your new account is {####}",
+        "EmailVerificationSubject": "Verify your new account",
+        "SmsVerificationMessage": "The verification code to your new account is {####}",
+        "UserPoolName": "EcommerceApi",
+        "VerificationMessageTemplate": {
+          "DefaultEmailOption": "CONFIRM_WITH_CODE",
+          "EmailMessage": "The verification code to your new account is {####}",
+          "EmailSubject": "Verify your new account",
+          "SmsMessage": "The verification code to your new account is {####}",
+        },
+      },
+      "Type": "AWS::Cognito::UserPool",
+      "UpdateReplacePolicy": "Delete",
+    },
+    "EcommerceApiPoolEcommerceApiDomainE8D0F742": {
+      "Properties": {
+        "Domain": "ecommerce-api-tgillus",
+        "UserPoolId": {
+          "Ref": "EcommerceApiPool917914B5",
+        },
+      },
+      "Type": "AWS::Cognito::UserPoolDomain",
+    },
+    "EcommerceApiPoolEcommerceApiResourceServer070841E7": {
+      "Properties": {
+        "Identifier": "EcommerceApiResourceService",
+        "Name": "EcommerceApiResourceService",
+        "Scopes": [
+          {
+            "ScopeDescription": "Ecommerce API read scope",
+            "ScopeName": "ecommerceapi.read",
+          },
+          {
+            "ScopeDescription": "Ecommerce API write scope",
+            "ScopeName": "ecommerceapi.write",
+          },
+        ],
+        "UserPoolId": {
+          "Ref": "EcommerceApiPool917914B5",
+        },
+      },
+      "Type": "AWS::Cognito::UserPoolResourceServer",
+    },
+    "EcommerceApiPoolTestPoolClientB1DAE862": {
+      "Properties": {
+        "AccessTokenValidity": 60,
+        "AllowedOAuthFlows": [
+          "client_credentials",
+        ],
+        "AllowedOAuthFlowsUserPoolClient": true,
+        "AllowedOAuthScopes": [
+          {
+            "Fn::Join": [
+              "",
+              [
+                {
+                  "Ref": "EcommerceApiPoolEcommerceApiResourceServer070841E7",
+                },
+                "/ecommerceapi.read",
+              ],
+            ],
+          },
+          {
+            "Fn::Join": [
+              "",
+              [
+                {
+                  "Ref": "EcommerceApiPoolEcommerceApiResourceServer070841E7",
+                },
+                "/ecommerceapi.write",
+              ],
+            ],
+          },
+        ],
+        "ClientName": "Test",
+        "EnableTokenRevocation": true,
+        "GenerateSecret": true,
+        "RefreshTokenValidity": 1440,
+        "SupportedIdentityProviders": [
+          "COGNITO",
+        ],
+        "TokenValidityUnits": {
+          "AccessToken": "minutes",
+          "RefreshToken": "minutes",
+        },
+        "UserPoolId": {
+          "Ref": "EcommerceApiPool917914B5",
+        },
+      },
+      "Type": "AWS::Cognito::UserPoolClient",
+    },
+  },
+  "Rules": {
+    "CheckBootstrapVersion": {
+      "Assertions": [
+        {
+          "Assert": {
+            "Fn::Not": [
+              {
+                "Fn::Contains": [
+                  [
+                    "1",
+                    "2",
+                    "3",
+                    "4",
+                    "5",
+                  ],
+                  {
+                    "Ref": "BootstrapVersion",
+                  },
+                ],
+              },
+            ],
+          },
+          "AssertDescription": "CDK bootstrap stack version 6 required. Please run 'cdk bootstrap' with a recent version of the CDK CLI.",
+        },
+      ],
+    },
+  },
+}
+`;

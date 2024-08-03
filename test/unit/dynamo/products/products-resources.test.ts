@@ -9,7 +9,7 @@ new ProductsResources(stack);
 
 const template = Template.fromStack(stack);
 
-test('creates global tables', () => {
+test('creates global table', () => {
   template.hasResource('AWS::DynamoDB::GlobalTable', {
     DeletionPolicy: 'Delete',
     Properties: {
