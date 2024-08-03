@@ -4,19 +4,28 @@ import type { ResponseDetails } from './response-details.js';
 export class Response {
   constructor(private readonly details: ResponseDetails) {}
 
-  produce() {
+  private produce(): APIGatewayProxyResult {
     const { body, statusCode } = this.details;
 
     return {
       body,
       statusCode,
-    } satisfies APIGatewayProxyResult;
+    };
   }
 
-  static success(data: Record<string, unknown>) {
+  static ok(data: Record<string, unknown>) {
     const details = {
-      body: JSON.stringify({ message: 'Success', ...data }),
+      body: JSON.stringify({ message: 'OK', ...data }),
       statusCode: 200,
+    } satisfies ResponseDetails;
+
+    return new Response(details).produce();
+  }
+
+  static badRequest(data: Record<string, unknown>) {
+    const details = {
+      body: JSON.stringify({ message: 'Bad Request', ...data }),
+      statusCode: 400,
     } satisfies ResponseDetails;
 
     return new Response(details).produce();
@@ -24,16 +33,16 @@ export class Response {
 
   static notFound() {
     const details = {
-      body: JSON.stringify({ message: 'Not found' }),
+      body: JSON.stringify({ message: 'Not Found' }),
       statusCode: 404,
     } satisfies ResponseDetails;
 
     return new Response(details).produce();
   }
 
-  static fail() {
+  static serverError() {
     const details = {
-      body: JSON.stringify({ message: 'Server error' }),
+      body: JSON.stringify({ message: 'Internal Server Error' }),
       statusCode: 500,
     } satisfies ResponseDetails;
 

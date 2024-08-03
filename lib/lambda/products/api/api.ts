@@ -33,14 +33,15 @@ export const ApiLive = Layer.effect(
             onFailure: flow(
               Match.value,
               Match.tags({
-                InvalidOperationError: Response.fail,
+                InvalidOperationError: Response.serverError,
                 NotFoundError: Response.notFound,
-                ServiceError: Response.fail,
-                ValidationError: Response.fail,
+                ServiceError: Response.serverError,
+                ValidationError: ({ issues }) =>
+                  Response.badRequest({ issues }),
               }),
               Match.exhaustive
             ),
-            onSuccess: Response.success,
+            onSuccess: Response.ok,
           })
         ),
     };

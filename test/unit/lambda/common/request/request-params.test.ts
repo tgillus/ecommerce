@@ -2,13 +2,14 @@ import { expect, test } from 'vitest';
 import { RequestParams } from '../../../../../lib/lambda/common/request/request-params.js';
 
 test('provides request body', () => {
-  const { body } = new RequestParams({
-    body: 'foo',
+  const body = 'foo';
+  const params = new RequestParams({
+    body,
     httpMethod: 'bar',
     pathParameters: { productId: 'baz' },
   });
 
-  expect(body).toEqual('foo');
+  expect(params.body).toEqual(body);
 });
 
 test('defaults request body to empty string', () => {
@@ -22,23 +23,25 @@ test('defaults request body to empty string', () => {
 });
 
 test('provides request http method', () => {
-  const { httpMethod } = new RequestParams({
+  const httpMethod = 'BAR';
+  const params = new RequestParams({
     body: 'foo',
     httpMethod: 'BAR',
     pathParameters: { productId: 'baz' },
   });
 
-  expect(httpMethod).toEqual('BAR');
+  expect(params.httpMethod).toEqual(httpMethod);
 });
 
 test('capitalizes request http method', () => {
-  const { httpMethod } = new RequestParams({
+  const httpMethod = 'bar';
+  const params = new RequestParams({
     body: 'foo',
-    httpMethod: 'bar',
+    httpMethod,
     pathParameters: { productId: 'baz' },
   });
 
-  expect(httpMethod).toEqual('BAR');
+  expect(params.httpMethod).toEqual(httpMethod.toUpperCase());
 });
 
 test('provides path parameters', () => {

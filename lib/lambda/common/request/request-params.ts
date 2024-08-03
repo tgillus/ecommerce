@@ -5,7 +5,9 @@ export class RequestParams {
   constructor(private readonly event: Event) {}
 
   get body() {
-    return Option.getOrElse(Option.fromNullable(this.event.body), () => '');
+    return Option.fromNullable(this.event.body).pipe(
+      Option.getOrElse(() => '')
+    );
   }
 
   get httpMethod() {

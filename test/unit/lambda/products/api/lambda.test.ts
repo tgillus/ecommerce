@@ -20,9 +20,9 @@ afterEach(() => {
 
 test('returns api result', async () => {
   const layer = Layer.succeed(Api, {
-    handler: () => Effect.succeed(Response.success({ foo: 'bar' })),
+    handler: () => Effect.succeed(Response.ok({ foo: 'bar' })),
   });
   td.when(Api.from(params)).thenReturn(layer);
 
-  expect(await handler(event)).toEqual(Response.success({ foo: 'bar' }));
+  expect(await handler(event)).toEqual(Response.ok({ foo: 'bar' }));
 });
