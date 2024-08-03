@@ -1,4 +1,4 @@
-import { Context, Effect, Inspectable, Layer, Logger } from 'effect';
+import { Context, Effect, HashMap, Inspectable, Layer, Logger } from 'effect';
 import { IdGenerator } from '../../../../vendor/id/id-generator.js';
 
 // biome-ignore lint/complexity/noStaticOnlyClass: <explanation>
@@ -11,7 +11,7 @@ export class AppLogger extends Context.Tag('AppLogger')<
 >() {
   static build() {
     return AppLoggerLive.pipe(
-      Layer.provide(Logger.replace(Logger.defaultLogger, jsonLogger))
+      Layer.provide(Logger.replace(Logger.defaultLogger, jsonLogger()))
     );
   }
 }
@@ -24,19 +24,21 @@ const AppLoggerLive = Layer.succeed(AppLogger, {
   info: (message: string) => Effect.log(message),
 });
 
-const jsonLogger = Logger.make(
-  ({ date, logLevel: { label: _logLevel }, message: msg }) => {
-    // biome-ignore lint/suspicious/noConsoleLog: <explanation>
-    globalThis.console.log(
-      Inspectable.stringifyCircular({
-        _logLevel,
-        id: IdGenerator.generate(),
-        msg,
-        timestamp: date.toISOString(),
-      })
-    );
-  }
-);
+const jsonLogger = () =>
+  Logger.make(
+    ({ date, logLevel: { label: _logLevel }, message: msg, annotations }) => {
+      // biome-ignore lint/suspicious/noConsoleLog: <explanation>
+      globalThis.console.log(
+        Inspectable.stringifyCircular({
+          ...Object.fromEntries(HashMap.toEntries(annotations)),
+          _logLevel,
+          id: IdGenerator.generate(),
+          msg,
+          timestamp: date.toISOString(),
+        })
+      );
+    }
+  );
 
 export const AppLoggerTest = Layer.succeed(AppLogger, {
   error: (_error: Error) => Effect.void,

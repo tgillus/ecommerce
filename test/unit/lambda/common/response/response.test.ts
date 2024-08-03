@@ -1,32 +1,33 @@
 import { expect, test } from 'vitest';
 import { Response } from '../../../../../lib/lambda/common/response/response.js';
 
-const data = { foo: 'bar' };
+const requestId = 'foo';
+const data = { bar: 'baz' };
 
 test('produces ok response', () => {
-  expect(Response.ok(data)).toEqual({
+  expect(Response.ok(requestId, data)).toEqual({
     statusCode: 200,
-    body: JSON.stringify({ message: 'OK', ...data }),
+    body: JSON.stringify({ requestId, message: 'OK', ...data }),
   });
 });
 
 test('produces bad request response', () => {
-  expect(Response.badRequest(data)).toEqual({
+  expect(Response.badRequest(requestId, data)).toEqual({
     statusCode: 400,
-    body: JSON.stringify({ message: 'Bad Request', ...data }),
+    body: JSON.stringify({ requestId, message: 'Bad Request', ...data }),
   });
 });
 
 test('produces not found response', () => {
-  expect(Response.notFound()).toEqual({
+  expect(Response.notFound(requestId)).toEqual({
     statusCode: 404,
-    body: JSON.stringify({ message: 'Not Found' }),
+    body: JSON.stringify({ requestId, message: 'Not Found' }),
   });
 });
 
 test('produces internal server error response', () => {
-  expect(Response.serverError()).toEqual({
+  expect(Response.serverError(requestId)).toEqual({
     statusCode: 500,
-    body: JSON.stringify({ message: 'Internal Server Error' }),
+    body: JSON.stringify({ requestId, message: 'Internal Server Error' }),
   });
 });

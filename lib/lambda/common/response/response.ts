@@ -17,36 +17,36 @@ export class Response {
     };
   }
 
-  static ok(data: Record<string, unknown>) {
+  static ok(requestId: string, data: Record<string, unknown>) {
     const details = {
-      body: JSON.stringify({ message: 'OK', ...data }),
+      body: JSON.stringify({ requestId, message: 'OK', ...data }),
       statusCode: 200,
     } satisfies ResponseDetails;
 
     return new Response(details).produce();
   }
 
-  static badRequest(data: Record<string, unknown>) {
+  static badRequest(requestId: string, data: Record<string, unknown>) {
     const details = {
-      body: JSON.stringify({ message: 'Bad Request', ...data }),
+      body: JSON.stringify({ requestId, message: 'Bad Request', ...data }),
       statusCode: 400,
     } satisfies ResponseDetails;
 
     return new Response(details).produce();
   }
 
-  static notFound() {
+  static notFound(requestId: string) {
     const details = {
-      body: JSON.stringify({ message: 'Not Found' }),
+      body: JSON.stringify({ requestId, message: 'Not Found' }),
       statusCode: 404,
     } satisfies ResponseDetails;
 
     return new Response(details).produce();
   }
 
-  static serverError() {
+  static serverError(requestId: string) {
     const details = {
-      body: JSON.stringify({ message: 'Internal Server Error' }),
+      body: JSON.stringify({ requestId, message: 'Internal Server Error' }),
       statusCode: 500,
     } satisfies ResponseDetails;
 

@@ -1,5 +1,6 @@
 import type { APIGatewayProxyResult } from 'aws-lambda';
 import { Context, Effect, Layer, Match, flow } from 'effect';
+import { RequestContext } from '../../common/request/request-context.js';
 import type { RequestParams } from '../../common/request/request-params.js';
 import { Response } from '../../common/response/response.js';
 import { OpFactory } from '../application/operation/op-factory.js';
@@ -25,6 +26,8 @@ const ApiLive = Layer.effect(
   Api,
   Effect.gen(function* () {
     const operation = yield* Operation;
+    const requestContext = yield* RequestContext;
+    const requestId = requestContext.requestId();
 
     return {
       handler: (params) =>
@@ -33,15 +36,15 @@ const ApiLive = Layer.effect(
             onFailure: flow(
               Match.value,
               Match.tags({
-                InvalidOperationError: Response.serverError,
-                NotFoundError: Response.notFound,
-                ServiceError: Response.serverError,
+                InvalidOperationError: () => Response.serverError(requestId),
+                NotFoundError: () => Response.notFound(requestId),
+                ServiceError: () => Response.serverError(requestId),
                 ValidationError: ({ issues }) =>
-                  Response.badRequest({ issues }),
+                  Response.badRequest(requestId, { issues }),
               }),
               Match.exhaustive
             ),
-            onSuccess: Response.ok,
+            onSuccess: (data) => Response.ok(requestId, data),
           })
         ),
     };
@@ -50,5 +53,5 @@ const ApiLive = Layer.effect(
 
 export const ApiTest = Layer.succeed(Api, {
   handler: (_params: RequestParams) =>
-    Effect.succeed(Response.ok({ foo: 'bar' })),
+    Effect.succeed(Response.ok('foo', { bar: 'baz' })),
 });

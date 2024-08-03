@@ -8,6 +8,7 @@ import { handler } from '../../../../../lib/lambda/products/api/lambda.js';
 
 const event = td.object<APIGatewayEvent>();
 const params = new RequestParams(event);
+const requestId = 'foo';
 
 beforeEach(() => {
   td.replace(Api, 'from');
@@ -20,5 +21,5 @@ afterEach(() => {
 test('returns api result', async () => {
   td.when(Api.from(params)).thenReturn(ApiTest);
 
-  expect(await handler(event)).toEqual(Response.ok({ foo: 'bar' }));
+  expect(await handler(event)).toEqual(Response.ok(requestId, { bar: 'baz' }));
 });
