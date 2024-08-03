@@ -18,7 +18,7 @@ const program = (params: RequestParams) =>
     return yield* validator.validate(params);
   });
 
-test('validates products', async () => {
+test('validates create product params', async () => {
   const product = {
     description: 'foo',
     name: 'bar',

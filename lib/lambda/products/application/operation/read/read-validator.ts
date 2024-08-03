@@ -23,7 +23,13 @@ export const ReadValidatorLive = Layer.effect(
           parameters,
           S.decodeUnknown(ReadProductArgsSchema, { errors: 'all' }),
           Effect.mapError(
-            (error) => new ValidationError(formatErrorSync(error))
+            (error) =>
+              new ValidationError(
+                formatErrorSync(error).map(({ message, path }) => ({
+                  message,
+                  path,
+                }))
+              )
           ),
           Effect.tapBoth({
             onFailure: probe.argsValidationFailed,
