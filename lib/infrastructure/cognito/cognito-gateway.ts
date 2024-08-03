@@ -22,14 +22,15 @@ export class CognitoGateway {
         this.client.userPoolClient(userPoolId, userPoolClientName)
       ),
       Effect.bind('clientId', ({ userPoolClient: { ClientId } }) =>
-        Effect.fromNullable(ClientId)
-      ),
-      Effect.catchTag(
-        'NoSuchElementException',
-        () =>
-          new NoSuchElementException(
-            `client id for ${userPoolClientName} not found`
+        Effect.fromNullable(ClientId).pipe(
+          Effect.catchTag('NoSuchElementException', () =>
+            Effect.fail(
+              new NoSuchElementException(
+                `client id for ${userPoolClientName} not found`
+              )
+            )
           )
+        )
       ),
       Effect.bind('userPoolClientDetails', ({ clientId, userPoolId }) =>
         this.client.describePoolClient(clientId, userPoolId)
@@ -37,13 +38,14 @@ export class CognitoGateway {
       Effect.bind(
         'clientSecret',
         ({ userPoolClientDetails: { ClientSecret } }) =>
-          Effect.fromNullable(ClientSecret)
-      ),
-      Effect.catchTag(
-        'NoSuchElementException',
-        () =>
-          new NoSuchElementException(
-            `client secret for ${userPoolClientName} not found`
+          Effect.fromNullable(ClientSecret).pipe(
+            Effect.catchTag(
+              'NoSuchElementException',
+              () =>
+                new NoSuchElementException(
+                  `client secret for ${userPoolClientName} not found`
+                )
+            )
           )
       ),
       Effect.andThen(({ clientId, clientSecret, userPoolId }) => ({
