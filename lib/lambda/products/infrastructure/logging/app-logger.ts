@@ -37,3 +37,8 @@ const jsonLogger = Logger.make(
     );
   }
 );
+
+export const AppLoggerTest = Layer.succeed(AppLogger, {
+  error: (_error: Error) => Effect.void,
+  info: (_message: string) => Effect.void,
+});

@@ -5,8 +5,8 @@ import { Time } from '../../../../vendor/type/time.js';
 import type { NotFoundError } from '../../../common/application/error/not-found-error.js';
 import { ProductDto } from '../../domain/dto/product-dto.js';
 import { DynamoGateway } from '../../infrastructure/persistence/dynamo-gateway.js';
-import type { CreateArgs } from '../operation/create/create-args.js';
-import type { ReadArgs } from '../operation/read/read-args.js';
+import type { CreateArgs } from '../operation/create/create-handler.js';
+import type { ReadArgs } from '../operation/read/read-handler.js';
 import { Probe } from '../probe/probe.js';
 
 // biome-ignore lint/complexity/noStaticOnlyClass: <explanation>

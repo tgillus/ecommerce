@@ -4,8 +4,8 @@ import type { NotFoundError } from '../../../common/application/error/not-found-
 import type { ServiceError } from '../../../common/application/error/service-error.js';
 import type { ValidationError } from '../../../common/application/error/validation-error.js';
 import type { RequestParams } from '../../../common/request/request-params.js';
-import type { CreateArgs } from './create/create-args.js';
-import type { ReadArgs } from './read/read-args.js';
+import type { CreateArgs } from './create/create-handler.js';
+import type { ReadArgs } from './read/read-handler.js';
 
 export class Operation extends Context.Tag('Operation')<
   Operation,

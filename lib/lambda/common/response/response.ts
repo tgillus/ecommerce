@@ -1,5 +1,9 @@
 import type { APIGatewayProxyResult } from 'aws-lambda';
-import type { ResponseDetails } from './response-details.js';
+
+interface ResponseDetails {
+  readonly body: string;
+  readonly statusCode: 200 | 400 | 404 | 500;
+}
 
 export class Response {
   constructor(private readonly details: ResponseDetails) {}

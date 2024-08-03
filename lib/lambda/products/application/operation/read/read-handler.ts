@@ -2,9 +2,14 @@ import { Context, Effect, Layer } from 'effect';
 import { Time } from '../../../../../vendor/type/time.js';
 import { ServiceError } from '../../../../common/application/error/service-error.js';
 import { ProductDto } from '../../../domain/dto/product-dto.js';
+import type { ProductEvent } from '../../event/product-event.js';
 import { ProductService } from '../../service/product-service.js';
 import type { Handler } from '../operation.js';
-import type { ReadArgs } from './read-args.js';
+
+export interface ReadArgs {
+  readonly event: typeof ProductEvent.READ_PRODUCT;
+  readonly productId: string;
+}
 
 // biome-ignore lint/complexity/noStaticOnlyClass: <explanation>
 export class ReadHandler extends Context.Tag('Handler')<

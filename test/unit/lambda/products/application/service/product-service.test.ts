@@ -2,8 +2,8 @@ import { Effect, Layer } from 'effect';
 import * as td from 'testdouble';
 import { afterEach, beforeEach, expect, test } from 'vitest';
 import { ProductEvent } from '../../../../../../lib/lambda/products/application/event/product-event.js';
-import type { CreateArgs } from '../../../../../../lib/lambda/products/application/operation/create/create-args.js';
-import type { ReadArgs } from '../../../../../../lib/lambda/products/application/operation/read/read-args.js';
+import type { CreateArgs } from '../../../../../../lib/lambda/products/application/operation/create/create-handler.js';
+import type { ReadArgs } from '../../../../../../lib/lambda/products/application/operation/read/read-handler.js';
 import { ProbeTest } from '../../../../../../lib/lambda/products/application/probe/probe.js';
 import {
   ProductService,

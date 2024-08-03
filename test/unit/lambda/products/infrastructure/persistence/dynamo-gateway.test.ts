@@ -1,5 +1,4 @@
 import { ConfigProvider, Effect, Exit } from 'effect';
-import assert from 'node:assert';
 import * as td from 'testdouble';
 import { afterEach, beforeEach, expect, test } from 'vitest';
 import { NotFoundError } from '../../../../../../lib/lambda/common/application/error/not-found-error.js';
@@ -50,7 +49,7 @@ test('builds a dynamo gateway', async () => {
     Effect.withConfigProvider(configProvider)
   );
 
-  assert.deepStrictEqual(await Effect.runPromiseExit(runnable), Exit.void);
+  expect(await Effect.runPromiseExit(runnable)).toStrictEqual(Exit.void);
 });
 
 test('saves products to dynamo', async () => {
@@ -65,7 +64,7 @@ test('saves products to dynamo', async () => {
     Effect.withConfigProvider(configProvider)
   );
 
-  assert.deepStrictEqual(await Effect.runPromiseExit(runnable), Exit.void);
+  expect(await Effect.runPromiseExit(runnable)).toStrictEqual(Exit.void);
 });
 
 test('retrieves products from dynamo', async () => {
@@ -82,7 +81,7 @@ test('retrieves products from dynamo', async () => {
     Effect.withConfigProvider(configProvider)
   );
 
-  expect(await Effect.runPromise(runnable)).toEqual(
+  expect(await Effect.runPromise(runnable)).toStrictEqual(
     new ProductDto(
       {
         description: 'foo',
@@ -109,8 +108,7 @@ test('returns not found error when products not found in dynamo', async () => {
     Effect.withConfigProvider(configProvider)
   );
 
-  assert.deepStrictEqual(
-    await Effect.runPromiseExit(runnable),
+  expect(await Effect.runPromiseExit(runnable)).toStrictEqual(
     Exit.fail(new NotFoundError('product not found'))
   );
 });

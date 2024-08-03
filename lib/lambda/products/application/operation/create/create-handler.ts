@@ -1,8 +1,14 @@
 import { Context, Effect, Layer } from 'effect';
 import { ServiceError } from '../../../../common/application/error/service-error.js';
+import type { Product } from '../../../domain/model/product.js';
+import type { ProductEvent } from '../../event/product-event.js';
 import { ProductService } from '../../service/product-service.js';
 import type { Handler } from '../operation.js';
-import type { CreateArgs } from './create-args.js';
+
+export interface CreateArgs {
+  readonly event: typeof ProductEvent.CREATE_PRODUCT;
+  readonly product: Product;
+}
 
 // biome-ignore lint/complexity/noStaticOnlyClass: <explanation>
 export class CreateHandler extends Context.Tag('Handler')<

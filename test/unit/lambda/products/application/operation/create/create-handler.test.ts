@@ -5,7 +5,7 @@ import * as td from 'testdouble';
 import { afterEach, beforeEach, expect, test } from 'vitest';
 import { ServiceError } from '../../../../../../../lib/lambda/common/application/error/service-error.js';
 import { ProductEvent } from '../../../../../../../lib/lambda/products/application/event/product-event.js';
-import type { CreateArgs } from '../../../../../../../lib/lambda/products/application/operation/create/create-args.js';
+import type { CreateArgs } from '../../../../../../../lib/lambda/products/application/operation/create/create-handler.js';
 import {
   CreateHandler,
   CreateHandlerLive,
