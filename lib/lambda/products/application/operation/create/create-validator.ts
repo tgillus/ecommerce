@@ -44,6 +44,18 @@ export const CreateValidatorLive = Layer.effect(
   })
 );
 
+export const CreateValidatorTest = Layer.succeed(CreateValidator, {
+  validate: (_params: RequestParams) =>
+    Effect.succeed({
+      event: ProductEvent.CREATE_PRODUCT,
+      product: {
+        description: 'foo',
+        name: 'bar',
+        price: '9.99',
+      },
+    }),
+});
+
 const CreateProductArgsSchema = S.Struct({
   description: S.String,
   name: S.String,

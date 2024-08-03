@@ -15,7 +15,7 @@ export class CreateOperation {
     );
 }
 
-const CreateOperationLive = Layer.effect(
+export const CreateOperationLive = Layer.effect(
   Operation,
   Effect.gen(function* () {
     const validator = yield* CreateValidator;
@@ -33,6 +33,5 @@ const CreateOperationLive = Layer.effect(
 );
 
 export const CreateOperationTest = Layer.succeed(Operation, {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   exec: (_params: RequestParams) => Effect.succeed({ productId: 'foo' }),
 });

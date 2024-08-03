@@ -23,3 +23,7 @@ export const CreateHandlerLive = Layer.effect(
     };
   })
 );
+
+export const CreateHandlerTest = Layer.succeed(CreateHandler, {
+  exec: (_args: CreateArgs) => Effect.succeed({ id: 'foo' }),
+});

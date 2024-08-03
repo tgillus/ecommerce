@@ -1,5 +1,6 @@
 import { Context, Effect, Layer } from 'effect';
 import { ServiceError } from '../../../../common/application/error/service-error.js';
+import { ProductDto } from '../../../domain/dto/product-dto.js';
 import { ProductService } from '../../service/product-service.js';
 import type { Handler } from '../operation.js';
 import type { ReadArgs } from './read-args.js';
@@ -25,3 +26,18 @@ export const ReadHandlerLive = Layer.effect(
     };
   })
 );
+
+export const ReadHandlerTest = Layer.succeed(ReadHandler, {
+  exec: (_args: ReadArgs) =>
+    Effect.succeed(
+      new ProductDto(
+        {
+          description: 'foo',
+          name: 'bar',
+          price: '9.99',
+        },
+        'baz',
+        new Date()
+      ).toJSON()
+    ),
+});

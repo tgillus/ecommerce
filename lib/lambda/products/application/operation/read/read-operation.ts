@@ -15,7 +15,7 @@ export class ReadOperation {
     );
 }
 
-const ReadOperationLive = Layer.effect(
+export const ReadOperationLive = Layer.effect(
   Operation,
   Effect.gen(function* () {
     const validator = yield* ReadValidator;
@@ -32,3 +32,7 @@ const ReadOperationLive = Layer.effect(
     };
   })
 );
+
+export const ReadOperationTest = Layer.succeed(Operation, {
+  exec: (_params: RequestParams) => Effect.succeed({ foo: 'bar' }),
+});

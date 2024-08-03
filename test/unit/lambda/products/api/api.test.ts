@@ -21,7 +21,6 @@ const event = td.object<APIGatewayEvent>();
 const params = new RequestParams(event);
 const program = Effect.gen(function* () {
   const api = yield* Api;
-
   return yield* api.handler(params);
 });
 
