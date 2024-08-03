@@ -2,9 +2,11 @@ import { ConfigProvider, Effect, Exit } from 'effect';
 import assert from 'node:assert';
 import * as td from 'testdouble';
 import { afterEach, beforeEach, expect, test } from 'vitest';
+import { NotFoundError } from '../../../../../../lib/lambda/common/application/error/not-found-error.js';
 import {
   DynamoClient,
-  DynamoClientTest,
+  DynamoClientFailureTest,
+  DynamoClientSuccessTest,
 } from '../../../../../../lib/lambda/common/vendor/dynamo/dynamo-client.js';
 import { ProductDto } from '../../../../../../lib/lambda/products/domain/dto/product-dto.js';
 import {
@@ -38,7 +40,7 @@ afterEach(() => {
 });
 
 test('builds a dynamo gateway', async () => {
-  td.when(DynamoClient.build()).thenReturn(DynamoClientTest);
+  td.when(DynamoClient.build()).thenReturn(DynamoClientSuccessTest);
   const dynamoGateway = DynamoGateway.build();
   const program = Effect.gen(function* () {
     const dynamoGateway = yield* DynamoGateway;
@@ -59,7 +61,7 @@ test('saves products to dynamo', async () => {
   });
   const runnable = program.pipe(
     Effect.provide(DynamoGatewayLive),
-    Effect.provide(DynamoClientTest),
+    Effect.provide(DynamoClientSuccessTest),
     Effect.provide(ProductMapperLive),
     Effect.withConfigProvider(configProvider)
   );
@@ -76,7 +78,7 @@ test('retrieves products from dynamo', async () => {
   });
   const runnable = program.pipe(
     Effect.provide(DynamoGatewayLive),
-    Effect.provide(DynamoClientTest),
+    Effect.provide(DynamoClientSuccessTest),
     Effect.provide(ProductMapperLive),
     Effect.withConfigProvider(configProvider)
   );
@@ -91,5 +93,25 @@ test('retrieves products from dynamo', async () => {
       'bar',
       now
     )
+  );
+});
+
+test('returns not found error when products not found in dynamo', async () => {
+  td.when(Time.now()).thenReturn(now);
+  const productId = 'bar';
+  const program = Effect.gen(function* () {
+    const dynamoGateway = yield* DynamoGateway;
+    return yield* dynamoGateway.get(productId);
+  });
+  const runnable = program.pipe(
+    Effect.provide(DynamoGatewayLive),
+    Effect.provide(DynamoClientFailureTest),
+    Effect.provide(ProductMapperLive),
+    Effect.withConfigProvider(configProvider)
+  );
+
+  assert.deepStrictEqual(
+    await Effect.runPromiseExit(runnable),
+    Exit.fail(new NotFoundError('product not found'))
   );
 });

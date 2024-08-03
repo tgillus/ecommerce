@@ -51,7 +51,7 @@ export const DynamoClientLive = Layer.sync(DynamoClient, () => {
   };
 });
 
-export const DynamoClientTest = Layer.succeed(DynamoClient, {
+export const DynamoClientSuccessTest = Layer.succeed(DynamoClient, {
   get: (_tableName: string, _pk: string) =>
     Effect.succeed({
       $metadata: {},
@@ -62,6 +62,18 @@ export const DynamoClientTest = Layer.succeed(DynamoClient, {
         Name: 'baz',
         Price: '9.99',
       },
+    }),
+  put: (_tableName: string, _item: Record<string, string>) =>
+    Effect.succeed({
+      $metadata: {},
+    }),
+});
+
+export const DynamoClientFailureTest = Layer.succeed(DynamoClient, {
+  get: (_tableName: string, _pk: string) =>
+    Effect.succeed({
+      $metadata: {},
+      Item: undefined,
     }),
   put: (_tableName: string, _item: Record<string, string>) =>
     Effect.succeed({
