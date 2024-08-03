@@ -15,12 +15,11 @@ import {
 } from '../../../../../../lib/lambda/products/application/operation/read/read-operation.js';
 import { ProbeTest } from '../../../../../../lib/lambda/products/application/probe/probe.js';
 
-const params = td.object<RequestParams>();
-
-const program = Effect.gen(function* () {
-  const operation = yield* Operation;
-  return yield* operation.exec(params);
-});
+const program = (params: RequestParams) =>
+  Effect.gen(function* () {
+    const operation = yield* Operation;
+    return yield* operation.exec(params);
+  });
 
 beforeEach(() => {
   td.replace(CreateOperation, 'build');
@@ -39,7 +38,7 @@ test('builds a create operation layer', async () => {
     pathParameters: null,
   });
   const operation = OpFactory.from(params).pipe(Layer.provide(ProbeTest));
-  const runnable = Effect.provide(program, operation);
+  const runnable = Effect.provide(program(params), operation);
 
   expect(await Effect.runPromise(runnable)).toStrictEqual({ productId: 'foo' });
 });
@@ -52,7 +51,7 @@ test('builds a read operation layer', async () => {
     pathParameters: { productId: 'foo' },
   });
   const operation = OpFactory.from(params).pipe(Layer.provide(ProbeTest));
-  const runnable = Effect.provide(program, operation);
+  const runnable = Effect.provide(program(params), operation);
 
   expect(await Effect.runPromise(runnable)).toStrictEqual({ foo: 'bar' });
 });
@@ -64,7 +63,7 @@ test('builds an invalid operation layer', async () => {
     pathParameters: null,
   });
   const operation = OpFactory.from(params).pipe(Layer.provide(ProbeTest));
-  const runnable = Effect.provide(program, operation);
+  const runnable = Effect.provide(program(params), operation);
 
   expect(await Effect.runPromiseExit(runnable)).toStrictEqual(
     Exit.fail(new InvalidOperationError())

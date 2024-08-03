@@ -47,3 +47,8 @@ const ApiLive = Layer.effect(
     };
   })
 );
+
+export const ApiTest = Layer.succeed(Api, {
+  handler: (_params: RequestParams) =>
+    Effect.succeed(Response.ok({ foo: 'bar' })),
+});

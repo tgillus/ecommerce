@@ -1,5 +1,5 @@
 import { Context, Effect, Layer } from 'effect';
-import type { UnknownException } from 'effect/Cause';
+import { UnknownException } from 'effect/Cause';
 import { IdGenerator } from '../../../../vendor/id/id-generator.js';
 import type { NotFoundError } from '../../../common/application/error/not-found-error.js';
 import { ProductDto } from '../../domain/dto/product-dto.js';
@@ -23,7 +23,7 @@ export class ProductService extends Context.Tag('ProductService')<
   }
 }
 
-const ProductServiceLive = Layer.effect(
+export const ProductServiceLive = Layer.effect(
   ProductService,
   Effect.gen(function* () {
     const dynamoGateway = yield* DynamoGateway;
@@ -53,3 +53,24 @@ const ProductServiceLive = Layer.effect(
     };
   })
 );
+
+export const ProductServiceSuccessTest = Layer.succeed(ProductService, {
+  create: (_args: CreateArgs) => Effect.succeed('foo'),
+  read: (_args: ReadArgs) =>
+    Effect.succeed(
+      new ProductDto(
+        {
+          description: 'foo',
+          name: 'bar',
+          price: '9.99',
+        },
+        'baz',
+        new Date()
+      )
+    ),
+});
+
+export const ProductServiceFailureTest = Layer.succeed(ProductService, {
+  create: (_args: CreateArgs) => Effect.fail(new UnknownException('foo')),
+  read: (_args: ReadArgs) => Effect.fail(new UnknownException('foo')),
+});
