@@ -1,5 +1,5 @@
+import { Schema } from '@effect/schema';
 import { formatErrorSync } from '@effect/schema/ArrayFormatter';
-import * as S from '@effect/schema/Schema';
 import { Context, Effect, Layer, pipe } from 'effect';
 import { SafeJson } from '../../../../../vendor/type/safe-json.js';
 import { ValidationError } from '../../../../common/application/error/validation-error.js';
@@ -29,7 +29,10 @@ export const CreateValidatorLive = Layer.effect(
         SafeJson.parse(body).pipe(
           Effect.orElseSucceed(() => ({})),
           Effect.andThen((data) =>
-            pipe(data, S.decodeUnknown(CreateProductSchema, { errors: 'all' }))
+            pipe(
+              data,
+              Schema.decodeUnknown(CreateProductSchema, { errors: 'all' })
+            )
           ),
           Effect.mapError(
             (error) =>

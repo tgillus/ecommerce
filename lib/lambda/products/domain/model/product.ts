@@ -1,9 +1,13 @@
-import * as S from '@effect/schema/Schema';
+import { Schema } from '@effect/schema';
 
-export type Product = S.Schema.Type<typeof CreateProductSchema>;
+export interface Product
+  extends Schema.Schema.Type<typeof CreateProductSchema> {}
 
-export const CreateProductSchema = S.Struct({
-  description: S.String,
-  name: S.String,
-  price: S.String,
+export const CreateProductSchema = Schema.Struct({
+  description: Schema.Trim.pipe(Schema.nonEmptyString(), Schema.maxLength(200)),
+  name: Schema.Trim.pipe(Schema.nonEmptyString(), Schema.maxLength(50)),
+  price: Schema.Trim.pipe(
+    Schema.nonEmptyString(),
+    Schema.pattern(/^\d{1,5}\.\d{2}$/)
+  ),
 });

@@ -59,6 +59,30 @@ test('validates create product params', async () => {
   });
 });
 
+test('trims white space from description', async () => {
+  const description = '   foo   ';
+  const product = {
+    description,
+    name: 'bar',
+    price: '9.99',
+  } satisfies Product;
+  const params = new RequestParams({
+    body: JSON.stringify(product),
+    httpMethod: 'POST',
+    pathParameters: null,
+  });
+  const validator = CreateValidatorLive.pipe(Layer.provide(ProbeTest));
+  const runnable = Effect.provide(program(params), validator);
+
+  expect(await Effect.runPromise(runnable)).toEqual({
+    event: ProductEvent.CREATE_PRODUCT,
+    product: {
+      ...product,
+      description: description.trim(),
+    },
+  });
+});
+
 test('requires description', async () => {
   const product = {
     name: 'foo',
@@ -83,6 +107,85 @@ test('requires description', async () => {
       ])
     )
   );
+});
+
+test('enforces min length on description', async () => {
+  const product = {
+    description: '',
+    name: 'bar',
+    price: '9.99',
+  } satisfies Product;
+  const params = new RequestParams({
+    body: JSON.stringify(product),
+    httpMethod: 'POST',
+    pathParameters: null,
+  });
+  const validator = CreateValidatorLive.pipe(Layer.provide(ProbeTest));
+  const runnable = Effect.provide(program(params), validator);
+
+  assert.deepStrictEqual(
+    await Effect.runPromiseExit(runnable),
+    Exit.fail(
+      new ValidationError([
+        {
+          message: 'Expected a non empty string, actual ""',
+          path: ['description'],
+        },
+      ])
+    )
+  );
+});
+
+test('enforces max length on description', async () => {
+  const description = 'a'.repeat(201);
+  const product = {
+    description,
+    name: 'bar',
+    price: '9.99',
+  } satisfies Product;
+  const params = new RequestParams({
+    body: JSON.stringify(product),
+    httpMethod: 'POST',
+    pathParameters: null,
+  });
+  const validator = CreateValidatorLive.pipe(Layer.provide(ProbeTest));
+  const runnable = Effect.provide(program(params), validator);
+
+  assert.deepStrictEqual(
+    await Effect.runPromiseExit(runnable),
+    Exit.fail(
+      new ValidationError([
+        {
+          message: `Expected a string at most 200 character(s) long, actual "${description}"`,
+          path: ['description'],
+        },
+      ])
+    )
+  );
+});
+
+test('trims white space from name', async () => {
+  const name = '   bar   ';
+  const product = {
+    description: 'foo',
+    name,
+    price: '9.99',
+  } satisfies Product;
+  const params = new RequestParams({
+    body: JSON.stringify(product),
+    httpMethod: 'POST',
+    pathParameters: null,
+  });
+  const validator = CreateValidatorLive.pipe(Layer.provide(ProbeTest));
+  const runnable = Effect.provide(program(params), validator);
+
+  expect(await Effect.runPromise(runnable)).toEqual({
+    event: ProductEvent.CREATE_PRODUCT,
+    product: {
+      ...product,
+      name: name.trim(),
+    },
+  });
 });
 
 test('requires name', async () => {
@@ -111,6 +214,85 @@ test('requires name', async () => {
   );
 });
 
+test('enforces min length on name', async () => {
+  const product = {
+    description: 'foo',
+    name: '',
+    price: '9.99',
+  } satisfies Product;
+  const params = new RequestParams({
+    body: JSON.stringify(product),
+    httpMethod: 'POST',
+    pathParameters: null,
+  });
+  const validator = CreateValidatorLive.pipe(Layer.provide(ProbeTest));
+  const runnable = Effect.provide(program(params), validator);
+
+  assert.deepStrictEqual(
+    await Effect.runPromiseExit(runnable),
+    Exit.fail(
+      new ValidationError([
+        {
+          message: 'Expected a non empty string, actual ""',
+          path: ['name'],
+        },
+      ])
+    )
+  );
+});
+
+test('enforces max length on name', async () => {
+  const name = 'a'.repeat(51);
+  const product = {
+    description: 'foo',
+    name,
+    price: '9.99',
+  } satisfies Product;
+  const params = new RequestParams({
+    body: JSON.stringify(product),
+    httpMethod: 'POST',
+    pathParameters: null,
+  });
+  const validator = CreateValidatorLive.pipe(Layer.provide(ProbeTest));
+  const runnable = Effect.provide(program(params), validator);
+
+  assert.deepStrictEqual(
+    await Effect.runPromiseExit(runnable),
+    Exit.fail(
+      new ValidationError([
+        {
+          message: `Expected a string at most 50 character(s) long, actual "${name}"`,
+          path: ['name'],
+        },
+      ])
+    )
+  );
+});
+
+test('trims white space from price', async () => {
+  const price = '   9.99   ';
+  const product = {
+    description: 'foo',
+    name: 'bar',
+    price: '9.99',
+  } satisfies Product;
+  const params = new RequestParams({
+    body: JSON.stringify(product),
+    httpMethod: 'POST',
+    pathParameters: null,
+  });
+  const validator = CreateValidatorLive.pipe(Layer.provide(ProbeTest));
+  const runnable = Effect.provide(program(params), validator);
+
+  expect(await Effect.runPromise(runnable)).toEqual({
+    event: ProductEvent.CREATE_PRODUCT,
+    product: {
+      ...product,
+      price: price.trim(),
+    },
+  });
+});
+
 test('requires price', async () => {
   const product = {
     description: 'foo',
@@ -130,6 +312,62 @@ test('requires price', async () => {
       new ValidationError([
         {
           message: 'is missing',
+          path: ['price'],
+        },
+      ])
+    )
+  );
+});
+
+test('enforces dollar amount on price', async () => {
+  const price = '100000.99';
+  const product = {
+    description: 'foo',
+    name: 'bar',
+    price,
+  } satisfies Product;
+  const params = new RequestParams({
+    body: JSON.stringify(product),
+    httpMethod: 'POST',
+    pathParameters: null,
+  });
+  const validator = CreateValidatorLive.pipe(Layer.provide(ProbeTest));
+  const runnable = Effect.provide(program(params), validator);
+
+  assert.deepStrictEqual(
+    await Effect.runPromiseExit(runnable),
+    Exit.fail(
+      new ValidationError([
+        {
+          message: `Expected a string matching the pattern ^\\d{1,5}\\.\\d{2}$, actual "${price}"`,
+          path: ['price'],
+        },
+      ])
+    )
+  );
+});
+
+test('enforces fractional amount on price', async () => {
+  const price = '9.990';
+  const product = {
+    description: 'foo',
+    name: 'bar',
+    price,
+  } satisfies Product;
+  const params = new RequestParams({
+    body: JSON.stringify(product),
+    httpMethod: 'POST',
+    pathParameters: null,
+  });
+  const validator = CreateValidatorLive.pipe(Layer.provide(ProbeTest));
+  const runnable = Effect.provide(program(params), validator);
+
+  assert.deepStrictEqual(
+    await Effect.runPromiseExit(runnable),
+    Exit.fail(
+      new ValidationError([
+        {
+          message: `Expected a string matching the pattern ^\\d{1,5}\\.\\d{2}$, actual "${price}"`,
           path: ['price'],
         },
       ])
