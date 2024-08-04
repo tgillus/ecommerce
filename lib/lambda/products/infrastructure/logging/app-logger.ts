@@ -5,7 +5,7 @@ import { IdGenerator } from '../../../../vendor/id/id-generator.js';
 export class AppLogger extends Context.Tag('AppLogger')<
   AppLogger,
   {
-    error: (error: Error) => Effect.Effect<void>;
+    error: (error: unknown) => Effect.Effect<void>;
     info: (message: string) => Effect.Effect<void>;
   }
 >() {
@@ -17,10 +17,7 @@ export class AppLogger extends Context.Tag('AppLogger')<
 }
 
 const AppLoggerLive = Layer.succeed(AppLogger, {
-  error: (error: Error) =>
-    Effect.logError(error.message).pipe(
-      Effect.andThen(() => Effect.logError(error.stack))
-    ),
+  error: (error: unknown) => Effect.logError(error),
   info: (message: string) => Effect.log(message),
 });
 
@@ -41,6 +38,6 @@ const jsonLogger = () =>
   );
 
 export const AppLoggerTest = Layer.succeed(AppLogger, {
-  error: (_error: Error) => Effect.void,
+  error: (_error: unknown) => Effect.void,
   info: (_message: string) => Effect.void,
 });

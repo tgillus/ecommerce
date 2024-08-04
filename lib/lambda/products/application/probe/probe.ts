@@ -1,4 +1,6 @@
 import { Context, Effect, Layer } from 'effect';
+import type { UnknownException } from 'effect/Cause';
+import type { NotFoundError } from '../../../common/application/error/not-found-error.js';
 import type { ValidationError } from '../../../common/application/error/validation-error.js';
 import { AppLogger } from '../../infrastructure/logging/app-logger.js';
 
@@ -11,9 +13,11 @@ export class Probe extends Context.Tag('Probe')<
     argsValidationSucceeded(): Effect.Effect<void>;
     argsValidationFailed(error: ValidationError): Effect.Effect<void>;
     savingProductToDynamoSucceeded(): Effect.Effect<void>;
-    savingProductToDynamoFailed(error: Error): Effect.Effect<void>;
+    savingProductToDynamoFailed(error: UnknownException): Effect.Effect<void>;
     readingProductFromDynamoSucceeded(): Effect.Effect<void>;
-    readingProductFromDynamoFailed(error: Error): Effect.Effect<void>;
+    readingProductFromDynamoFailed(
+      error: UnknownException | NotFoundError
+    ): Effect.Effect<void>;
   }
 >() {
   static build() {
@@ -35,10 +39,10 @@ const ProbeLive = Layer.effect(
       argsValidationFailed: (error) => logger.error(error),
       savingProductToDynamoSucceeded: () =>
         logger.info('Saving product to dynamo succeeded.'),
-      savingProductToDynamoFailed: (error: Error) => logger.error(error),
+      savingProductToDynamoFailed: (error) => logger.error(error.error),
       readingProductFromDynamoSucceeded: () =>
         logger.info('Reading product from dynamo succeeded.'),
-      readingProductFromDynamoFailed: (error: Error) => logger.error(error),
+      readingProductFromDynamoFailed: (error) => logger.error(error),
     };
   })
 );
