@@ -7,7 +7,7 @@ import { InvalidOperationError } from '../../../../../lib/lambda/common/applicat
 import { NotFoundError } from '../../../../../lib/lambda/common/application/error/not-found-error.js';
 import { ServiceError } from '../../../../../lib/lambda/common/application/error/service-error.js';
 import { ValidationError } from '../../../../../lib/lambda/common/application/error/validation-error.js';
-import { RequestContextLive } from '../../../../../lib/lambda/common/request/request-context.js';
+import { RequestContextTest } from '../../../../../lib/lambda/common/request/request-context.js';
 import { RequestParams } from '../../../../../lib/lambda/common/request/request-params.js';
 import { Response } from '../../../../../lib/lambda/common/response/response.js';
 import { Api } from '../../../../../lib/lambda/products/api/api.js';
@@ -17,7 +17,6 @@ import {
   Probe,
   ProbeTest,
 } from '../../../../../lib/lambda/products/application/probe/probe.js';
-import { IdGenerator } from '../../../../../lib/vendor/id/id-generator.js';
 
 const event = td.object<APIGatewayEvent>();
 const params = new RequestParams(event);
@@ -30,9 +29,6 @@ const program = Effect.gen(function* () {
 beforeEach(() => {
   td.replace(OpFactory, 'from');
   td.replace(Probe, 'build');
-  td.replace(IdGenerator, 'generate');
-
-  td.when(IdGenerator.generate()).thenReturn(requestId);
 });
 
 afterEach(() => {
@@ -48,7 +44,7 @@ test('returns success result', async () => {
   const api = Api.from(params);
 
   const result = await Effect.runPromise(
-    program.pipe(Effect.provide(api), Effect.provide(RequestContextLive))
+    program.pipe(Effect.provide(api), Effect.provide(RequestContextTest))
   );
 
   expect(result).toEqual(Response.ok(requestId, { foo: 'bar' }));
@@ -63,7 +59,7 @@ test('returns invalid operation result', async () => {
   const api = Api.from(params);
 
   const result = await Effect.runPromise(
-    program.pipe(Effect.provide(api), Effect.provide(RequestContextLive))
+    program.pipe(Effect.provide(api), Effect.provide(RequestContextTest))
   );
 
   expect(result).toEqual(Response.serverError(requestId));
@@ -78,7 +74,7 @@ test('returns not found result', async () => {
   const api = Api.from(params);
 
   const result = await Effect.runPromise(
-    program.pipe(Effect.provide(api), Effect.provide(RequestContextLive))
+    program.pipe(Effect.provide(api), Effect.provide(RequestContextTest))
   );
 
   expect(result).toEqual(Response.notFound(requestId));
@@ -93,7 +89,7 @@ test('returns server error result', async () => {
   const api = Api.from(params);
 
   const result = await Effect.runPromise(
-    program.pipe(Effect.provide(api), Effect.provide(RequestContextLive))
+    program.pipe(Effect.provide(api), Effect.provide(RequestContextTest))
   );
 
   expect(result).toEqual(Response.serverError(requestId));
@@ -109,7 +105,7 @@ test('returns validation error result', async () => {
   const api = Api.from(params);
 
   const result = await Effect.runPromise(
-    program.pipe(Effect.provide(api), Effect.provide(RequestContextLive))
+    program.pipe(Effect.provide(api), Effect.provide(RequestContextTest))
   );
 
   expect(result).toEqual(Response.badRequest(requestId, { issues }));

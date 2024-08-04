@@ -27,7 +27,7 @@ const ApiLive = Layer.effect(
   Effect.gen(function* () {
     const operation = yield* Operation;
     const requestContext = yield* RequestContext;
-    const requestId = requestContext.requestId();
+    const requestId = requestContext.requestId;
 
     return {
       handler: (params) =>

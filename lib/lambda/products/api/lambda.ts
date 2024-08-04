@@ -13,7 +13,7 @@ export const handler = async (
   const params = new RequestParams(event);
   const program = Effect.gen(function* () {
     const requestContext = yield* RequestContext;
-    const requestId = requestContext.requestId();
+    const requestId = requestContext.requestId;
     yield* Effect.annotateLogsScoped('requestId', requestId);
 
     const api = yield* Api;
