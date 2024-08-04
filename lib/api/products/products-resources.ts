@@ -6,7 +6,7 @@ import { Construct } from 'constructs';
 import { Package } from '../../vendor/pkg/package.js';
 
 interface ProductsResourcesProps {
-  readonly api: apigw.IRestApi;
+  readonly api: apigw.RestApi;
   readonly authorizer: apigw.IAuthorizer;
   readonly productsTable: dynamo.ITableV2;
 }

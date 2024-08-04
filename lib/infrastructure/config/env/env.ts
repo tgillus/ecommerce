@@ -9,4 +9,10 @@ export const env = cleanEnv(process.env, {
   AWS_COGNITO_RESOURCE_SERVER_IDENTIFIER: str(),
   AWS_COGNITO_TEST_USER_POOL_CLIENT_NAME: str(),
   AWS_COGNITO_USER_POOL_NAME: str(),
+  CDK_DEFAULT_ACCOUNT: str({
+    devDefault: 'foo',
+  }),
+  CDK_DEFAULT_REGION: str({
+    devDefault: 'us-east-1',
+  }),
 });

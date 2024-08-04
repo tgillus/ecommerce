@@ -45,11 +45,7 @@ test('retrieves credentials', async () => {
 });
 
 test('returns error when user pool id not returned', async () => {
-  td.when(client.userPool(userPoolName)).thenReturn(
-    Effect.succeed({
-      Id: undefined,
-    })
-  );
+  td.when(client.userPool(userPoolName)).thenReturn(Effect.succeed({}));
   expect(
     await Effect.runPromiseExit(
       cognitoGateway.credentials(userPoolName, userPoolClientName)
@@ -69,9 +65,7 @@ test('returns error when client id not returned', async () => {
     })
   );
   td.when(client.userPoolClient(userPoolId, userPoolClientName)).thenReturn(
-    Effect.succeed({
-      ClientId: undefined,
-    })
+    Effect.succeed({})
   );
   expect(
     await Effect.runPromiseExit(
@@ -100,9 +94,7 @@ test('returns error when client secret not returned', async () => {
     })
   );
   td.when(client.describePoolClient(clientId, userPoolId)).thenReturn(
-    Effect.succeed({
-      ClientSecret: undefined,
-    })
+    Effect.succeed({})
   );
   expect(
     await Effect.runPromiseExit(

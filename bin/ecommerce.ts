@@ -8,9 +8,14 @@ import { Config } from '../lib/infrastructure/config/config.js';
 
 const app = new cdk.App();
 const config = new Config();
+const {
+  settings: {
+    cdk: { account, region },
+  },
+} = config;
 const env = {
-  account: process.env.CDK_DEFAULT_ACCOUNT,
-  region: process.env.CDK_DEFAULT_REGION,
+  account,
+  region,
 } satisfies cdk.Environment;
 
 const { productsTable } = new DynamoStack(app, 'EcommerceDynamoStack', {
