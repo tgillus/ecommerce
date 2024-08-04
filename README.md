@@ -53,13 +53,25 @@ The environment variables have place holder values that need to be replaced with
 
 ## Command Examples
 
+### Typecheck Codebase
+
+```sh
+npm run build
+```
+
+### Execute Unit Tests
+
+```sh
+npm run test
+```
+
 ### Deploy AWS Resources
 
 ```sh
 npm run cdk deploy -- --all
 ```
 
-### Test the Project by Hitting the API via Integration Tests
+### Execute Integration Tests
 
 ```sh
 npm run test:e2e
