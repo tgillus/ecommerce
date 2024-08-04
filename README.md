@@ -34,7 +34,7 @@ cp .env.example .env
 
 The environment variables have place holder values that need to be replaced with actual values.
 
-**NOTE**: The `.env` file is used to store sensitive information such as OAuth client id and client secret values. Do not commit the `.env` file to source control.
+**NOTE**: The `.env` file can be used to store sensitive information that should be kept secret. Therefore do not commit the `.env` file to source control.
 
 ## Commands
 
