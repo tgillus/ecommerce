@@ -23,7 +23,7 @@ describe('POST /products', () => {
       .returns('id');
   });
 
-  test.skip('requires an access token', async () => {
+  test('requires an access token', async () => {
     await spec()
       .post('/products')
       .withPathParams('productId', 'foo')
@@ -31,7 +31,7 @@ describe('POST /products', () => {
   });
 });
 
-describe.skip('GET /products/{productId}', () => {
+describe('GET /products/{productId}', () => {
   test('retrieves an existing product', async () => {
     const productId = await spec()
       .post('/products')
