@@ -20,15 +20,27 @@ test('returns request id', () => {
 });
 
 test('caches request id', () => {
-  const program = Effect.gen(function* () {
-    const requestContext = yield* RequestContext;
+  const { firstRequestId, secondRequestId } = Effect.runSync(
+    Effect.Do.pipe(
+      Effect.bind('firstRequestId', () =>
+        Effect.gen(function* () {
+          const requestContext = yield* RequestContext;
+          return requestContext.requestId;
+        })
+      ),
+      Effect.bind('secondRequestId', () =>
+        Effect.gen(function* () {
+          const requestContext = yield* RequestContext;
+          return requestContext.requestId;
+        })
+      ),
+      Effect.andThen(({ firstRequestId, secondRequestId }) => ({
+        firstRequestId,
+        secondRequestId,
+      })),
+      Effect.provide(RequestContextLive)
+    )
+  );
 
-    return requestContext.requestId;
-  });
-  const runnable = program.pipe(Effect.provide(RequestContextLive));
-
-  const requestId = Effect.runSync(runnable);
-  const anotherRequestId = Effect.runSync(runnable);
-
-  expect(requestId).toStrictEqual(anotherRequestId);
+  expect(firstRequestId).toStrictEqual(secondRequestId);
 });

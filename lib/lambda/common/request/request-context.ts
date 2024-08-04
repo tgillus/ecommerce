@@ -11,7 +11,9 @@ export class RequestContext extends Context.Tag('RequestContext')<
 export const RequestContextLive = Layer.effect(
   RequestContext,
   Effect.gen(function* () {
-    const generate = yield* cachedGenerate;
+    const generate = yield* Effect.cached(
+      Effect.succeed(IdGenerator.generate())
+    );
 
     return {
       requestId: yield* generate,
@@ -22,5 +24,3 @@ export const RequestContextLive = Layer.effect(
 export const RequestContextTest = Layer.succeed(RequestContext, {
   requestId: 'foo',
 });
-
-const cachedGenerate = Effect.cached(Effect.succeed(IdGenerator.generate()));
