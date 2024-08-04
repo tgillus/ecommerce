@@ -23,4 +23,4 @@ export const RequestContextTest = Layer.succeed(RequestContext, {
   requestId: 'foo',
 });
 
-const cachedGenerate = Effect.cached(IdGenerator.generate());
+const cachedGenerate = Effect.cached(Effect.succeed(IdGenerator.generate()));

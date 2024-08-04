@@ -1,9 +1,8 @@
-import { Effect } from 'effect';
 import { nanoid } from 'nanoid';
 
 export class IdGenerator {
   private generate() {
-    return Effect.succeed(nanoid());
+    return nanoid();
   }
 
   static generate() {
