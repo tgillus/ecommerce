@@ -137,7 +137,7 @@ test('enforces min length on description', async () => {
 });
 
 test('enforces max length on description', async () => {
-  const description = 'a'.repeat(201);
+  const description = 'a'.repeat(3001);
   const product = {
     description,
     name: 'bar',
@@ -156,7 +156,7 @@ test('enforces max length on description', async () => {
     Exit.fail(
       new ValidationError([
         {
-          message: `Expected a string at most 200 character(s) long, actual "${description}"`,
+          message: `Expected a string at most 3000 character(s) long, actual "${description}"`,
           path: ['description'],
         },
       ])
@@ -242,7 +242,7 @@ test('enforces min length on name', async () => {
 });
 
 test('enforces max length on name', async () => {
-  const name = 'a'.repeat(51);
+  const name = 'a'.repeat(101);
   const product = {
     description: 'foo',
     name,
@@ -261,7 +261,7 @@ test('enforces max length on name', async () => {
     Exit.fail(
       new ValidationError([
         {
-          message: `Expected a string at most 50 character(s) long, actual "${name}"`,
+          message: `Expected a string at most 100 character(s) long, actual "${name}"`,
           path: ['name'],
         },
       ])
