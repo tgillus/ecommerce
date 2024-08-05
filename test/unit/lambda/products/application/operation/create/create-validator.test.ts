@@ -94,6 +94,34 @@ test('requires description', async () => {
   );
 });
 
+test.each([
+  {
+    field: 'description',
+    value: 0,
+  },
+])('enforces expected type on $field', async ({ field, value }) => {
+  const product = productFactory.build({ [field]: value });
+  const params = new RequestParams({
+    body: JSON.stringify(product),
+    httpMethod: 'POST',
+    pathParameters: null,
+  });
+  const validator = CreateValidatorLive.pipe(Layer.provide(ProbeTest));
+  const runnable = Effect.provide(program(params), validator);
+
+  assert.deepStrictEqual(
+    await Effect.runPromiseExit(runnable),
+    Exit.fail(
+      new ValidationError([
+        {
+          message: `Expected string, actual ${value}`,
+          path: [field],
+        },
+      ])
+    )
+  );
+});
+
 test('enforces min length on description', async () => {
   const product = productFactory.build({ description: '' });
   const params = new RequestParams({
@@ -184,6 +212,34 @@ test('requires name', async () => {
   );
 });
 
+test.each([
+  {
+    field: 'name',
+    value: 0,
+  },
+])('enforces expected type on $field', async ({ field, value }) => {
+  const product = productFactory.build({ [field]: value });
+  const params = new RequestParams({
+    body: JSON.stringify(product),
+    httpMethod: 'POST',
+    pathParameters: null,
+  });
+  const validator = CreateValidatorLive.pipe(Layer.provide(ProbeTest));
+  const runnable = Effect.provide(program(params), validator);
+
+  assert.deepStrictEqual(
+    await Effect.runPromiseExit(runnable),
+    Exit.fail(
+      new ValidationError([
+        {
+          message: `Expected string, actual ${value}`,
+          path: [field],
+        },
+      ])
+    )
+  );
+});
+
 test('enforces min length on name', async () => {
   const product = productFactory.build({ name: '' });
   const params = new RequestParams({
@@ -268,6 +324,34 @@ test('requires price', async () => {
         {
           message: 'is missing',
           path: ['price'],
+        },
+      ])
+    )
+  );
+});
+
+test.each([
+  {
+    field: 'price',
+    value: 0,
+  },
+])('enforces expected type on $field', async ({ field, value }) => {
+  const product = productFactory.build({ [field]: value });
+  const params = new RequestParams({
+    body: JSON.stringify(product),
+    httpMethod: 'POST',
+    pathParameters: null,
+  });
+  const validator = CreateValidatorLive.pipe(Layer.provide(ProbeTest));
+  const runnable = Effect.provide(program(params), validator);
+
+  assert.deepStrictEqual(
+    await Effect.runPromiseExit(runnable),
+    Exit.fail(
+      new ValidationError([
+        {
+          message: `Expected string, actual ${value}`,
+          path: [field],
         },
       ])
     )
