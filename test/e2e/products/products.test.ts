@@ -11,7 +11,12 @@ describe('POST /products', () => {
       .post('/products')
       .withHeaders('Authorization', accessToken)
       .withBody(product)
-      .expectStatus(200);
+      .expectStatus(200)
+      .expectJsonLike({
+        requestId,
+        message: 'OK',
+        id,
+      });
   });
 });
 
@@ -24,11 +29,6 @@ describe('GET /products/{productId}', () => {
       .withHeaders('Authorization', accessToken)
       .withBody(product)
       .expectStatus(200)
-      .expectJsonLike({
-        requestId,
-        message: 'OK',
-        id,
-      })
       .returns('id');
 
     await spec()
