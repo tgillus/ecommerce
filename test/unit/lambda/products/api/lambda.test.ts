@@ -21,5 +21,7 @@ afterEach(() => {
 test('returns api result', async () => {
   td.when(Api.from(params)).thenReturn(ApiTest);
 
-  expect(await handler(event)).toEqual(Response.ok(requestId, { bar: 'baz' }));
+  expect(await handler(event)).toStrictEqual(
+    Response.ok(requestId, { bar: 'baz' })
+  );
 });

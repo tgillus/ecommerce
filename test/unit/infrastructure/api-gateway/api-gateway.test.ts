@@ -17,13 +17,13 @@ test('retrieves an api id', async () => {
     })
   );
 
-  expect(await Effect.runPromise(apiGateway.apiId(apiName))).toEqual(id);
+  expect(await Effect.runPromise(apiGateway.apiId(apiName))).toStrictEqual(id);
 });
 
 test('returns error when no api id found', async () => {
   td.when(client.restApi(apiName)).thenReturn(Effect.succeed({}));
 
-  expect(await Effect.runPromiseExit(apiGateway.apiId(apiName))).toEqual(
+  expect(await Effect.runPromiseExit(apiGateway.apiId(apiName))).toStrictEqual(
     Exit.fail(
       new NoSuchElementException(
         `api named ${apiName} found but does not have an id`

@@ -37,7 +37,7 @@ test('retrieves credentials', async () => {
     await Effect.runPromise(
       cognitoGateway.credentials(userPoolName, userPoolClientName)
     )
-  ).toEqual({
+  ).toStrictEqual({
     clientId,
     clientSecret,
     userPoolId,
@@ -50,7 +50,7 @@ test('returns error when user pool id not returned', async () => {
     await Effect.runPromiseExit(
       cognitoGateway.credentials(userPoolName, userPoolClientName)
     )
-  ).toEqual(
+  ).toStrictEqual(
     Exit.fail(
       new NoSuchElementException(`user pool id for ${userPoolName} not found`)
     )
@@ -71,7 +71,7 @@ test('returns error when client id not returned', async () => {
     await Effect.runPromiseExit(
       cognitoGateway.credentials(userPoolName, userPoolClientName)
     )
-  ).toEqual(
+  ).toStrictEqual(
     Exit.fail(
       new NoSuchElementException(
         `client id for ${userPoolClientName} not found`
@@ -100,7 +100,7 @@ test('returns error when client secret not returned', async () => {
     await Effect.runPromiseExit(
       cognitoGateway.credentials(userPoolName, userPoolClientName)
     )
-  ).toEqual(
+  ).toStrictEqual(
     Exit.fail(
       new NoSuchElementException(
         `client secret for ${userPoolClientName} not found`

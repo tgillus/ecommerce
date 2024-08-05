@@ -15,7 +15,7 @@ const product = {
 const productDto = new ProductDto(product, id, now);
 
 test('formats product as json', () => {
-  expect(productDto.toJSON()).toEqual({
+  expect(productDto.toJSON()).toStrictEqual({
     id,
     description,
     name,
@@ -24,21 +24,21 @@ test('formats product as json', () => {
 });
 
 test('returns product id', () => {
-  expect(productDto.id).toEqual(id);
+  expect(productDto.id).toStrictEqual(id);
 });
 
 test('returns product description', () => {
-  expect(productDto.description).toEqual(description);
+  expect(productDto.description).toStrictEqual(description);
 });
 
 test('returns product name', () => {
-  expect(productDto.name).toEqual(name);
+  expect(productDto.name).toStrictEqual(name);
 });
 
 test('returns product price', () => {
-  expect(productDto.price).toEqual(price);
+  expect(productDto.price).toStrictEqual(price);
 });
 
 test('returns date product was created', () => {
-  expect(productDto.createdAt).toEqual(now);
+  expect(productDto.createdAt).toStrictEqual(now);
 });

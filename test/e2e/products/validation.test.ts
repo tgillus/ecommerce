@@ -9,48 +9,41 @@ request.setBaseUrl(apiBaseUrl);
 request.setDefaultTimeout(10000);
 
 const requestId = /^[A-Za-z0-9_-]+$/;
-const id = requestId;
 
 describe('POST /products', () => {
-  test('saves new products', async () => {
+  test('requires an access token', async () => {
     const product = productFactory.build();
 
     await spec()
       .post('/products')
-      .withHeaders('Authorization', accessToken)
       .withBody(product)
-      .expectStatus(200);
+      .expectStatus(401)
+      .expectJson({
+        message: 'Unauthorized',
+      });
   });
 });
 
 describe('GET /products/{productId}', () => {
-  test('retrieves an existing product', async () => {
-    const product = productFactory.build();
-
-    const productId = await spec()
-      .post('/products')
-      .withHeaders('Authorization', accessToken)
-      .withBody(product)
-      .expectStatus(200)
-      .expectJsonLike({
-        requestId,
-        message: 'OK',
-        id,
-      })
-      .returns('id');
-
+  test('returns 404 when products are not found', async () => {
     await spec()
       .get('/products/{productId}')
-      .withPathParams('productId', productId)
+      .withPathParams('productId', 'foo')
       .withHeaders('Authorization', accessToken)
-      .expectStatus(200)
+      .expectStatus(404)
       .expectJsonLike({
         requestId,
-        message: 'OK',
-        item: {
-          ...product,
-          id: productId,
-        },
+        message: 'Not Found',
+      });
+  });
+
+  test('requires an access token', async () => {
+    await spec()
+      .get('/products/{productId}')
+      .withPathParams('productId', 'foo')
+      .expectStatus(401)
+      .expectJson({
+        message: 'Unauthorized',
       });
   });
 });

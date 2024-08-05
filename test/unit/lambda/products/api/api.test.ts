@@ -47,7 +47,7 @@ test('returns success result', async () => {
     program.pipe(Effect.provide(api), Effect.provide(RequestContextTest))
   );
 
-  expect(result).toEqual(Response.ok(requestId, { foo: 'bar' }));
+  expect(result).toStrictEqual(Response.ok(requestId, { foo: 'bar' }));
 });
 
 test('returns invalid operation result', async () => {
@@ -62,7 +62,7 @@ test('returns invalid operation result', async () => {
     program.pipe(Effect.provide(api), Effect.provide(RequestContextTest))
   );
 
-  expect(result).toEqual(Response.serverError(requestId));
+  expect(result).toStrictEqual(Response.serverError(requestId));
 });
 
 test('returns not found result', async () => {
@@ -77,7 +77,7 @@ test('returns not found result', async () => {
     program.pipe(Effect.provide(api), Effect.provide(RequestContextTest))
   );
 
-  expect(result).toEqual(Response.notFound(requestId));
+  expect(result).toStrictEqual(Response.notFound(requestId));
 });
 
 test('returns server error result', async () => {
@@ -92,7 +92,7 @@ test('returns server error result', async () => {
     program.pipe(Effect.provide(api), Effect.provide(RequestContextTest))
   );
 
-  expect(result).toEqual(Response.serverError(requestId));
+  expect(result).toStrictEqual(Response.serverError(requestId));
 });
 
 test('returns validation error result', async () => {
@@ -108,5 +108,5 @@ test('returns validation error result', async () => {
     program.pipe(Effect.provide(api), Effect.provide(RequestContextTest))
   );
 
-  expect(result).toEqual(Response.badRequest(requestId, { issues }));
+  expect(result).toStrictEqual(Response.badRequest(requestId, { issues }));
 });

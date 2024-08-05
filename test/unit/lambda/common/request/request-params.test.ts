@@ -9,7 +9,7 @@ test('provides request body', () => {
     pathParameters: { productId: 'baz' },
   });
 
-  expect(params.body).toEqual(body);
+  expect(params.body).toStrictEqual(body);
 });
 
 test('defaults request body to empty string', () => {
@@ -19,7 +19,7 @@ test('defaults request body to empty string', () => {
     pathParameters: { productId: 'baz' },
   });
 
-  expect(body).toEqual('');
+  expect(body).toStrictEqual('');
 });
 
 test('provides request http method', () => {
@@ -30,7 +30,7 @@ test('provides request http method', () => {
     pathParameters: { productId: 'baz' },
   });
 
-  expect(params.httpMethod).toEqual(httpMethod);
+  expect(params.httpMethod).toStrictEqual(httpMethod);
 });
 
 test('capitalizes request http method', () => {
@@ -41,7 +41,7 @@ test('capitalizes request http method', () => {
     pathParameters: { productId: 'baz' },
   });
 
-  expect(params.httpMethod).toEqual(httpMethod.toUpperCase());
+  expect(params.httpMethod).toStrictEqual(httpMethod.toUpperCase());
 });
 
 test('provides path parameters', () => {
@@ -52,5 +52,5 @@ test('provides path parameters', () => {
     pathParameters,
   });
 
-  expect(parameters).toEqual(pathParameters);
+  expect(parameters).toStrictEqual(pathParameters);
 });

@@ -26,7 +26,7 @@ test('retrieves an api id', async () => {
     await Effect.runPromise(
       oauthGateway.accessToken(issuer, clientId, clientSecret)
     )
-  ).toEqual(accessToken);
+  ).toStrictEqual(accessToken);
 });
 
 test('returns error when no access token is provided', async () => {
@@ -38,7 +38,9 @@ test('returns error when no access token is provided', async () => {
     await Effect.runPromiseExit(
       oauthGateway.accessToken(issuer, clientId, clientSecret)
     )
-  ).toEqual(Exit.fail(new NoSuchElementException('no access token available')));
+  ).toStrictEqual(
+    Exit.fail(new NoSuchElementException('no access token available'))
+  );
 });
 
 test('builds an outh gateway', () => {

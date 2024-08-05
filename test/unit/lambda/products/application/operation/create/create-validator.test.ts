@@ -9,7 +9,7 @@ import {
   CreateValidatorLive,
 } from '../../../../../../../lib/lambda/products/application/operation/create/create-validator.js';
 import { ProbeTest } from '../../../../../../../lib/lambda/products/application/probe/probe.js';
-import type { Product } from '../../../../../../../lib/lambda/products/domain/model/product.js';
+import { productFactory } from '../../../../../../factories/product-factory.js';
 
 const program = (params: RequestParams) =>
   Effect.gen(function* () {
@@ -18,11 +18,7 @@ const program = (params: RequestParams) =>
   });
 
 test('builds a create validator', async () => {
-  const product = {
-    description: 'foo',
-    name: 'bar',
-    price: '9.99',
-  } satisfies Product;
+  const product = productFactory.build();
   const params = new RequestParams({
     body: JSON.stringify(product),
     httpMethod: 'POST',
@@ -33,18 +29,14 @@ test('builds a create validator', async () => {
     Effect.provide(ProbeTest)
   );
 
-  expect(await Effect.runPromise(runnable)).toEqual({
+  expect(await Effect.runPromise(runnable)).toStrictEqual({
     event: ProductEvent.CREATE_PRODUCT,
     product,
   });
 });
 
 test('validates create product params', async () => {
-  const product = {
-    description: 'foo',
-    name: 'bar',
-    price: '9.99',
-  } satisfies Product;
+  const product = productFactory.build();
   const params = new RequestParams({
     body: JSON.stringify(product),
     httpMethod: 'POST',
@@ -53,7 +45,7 @@ test('validates create product params', async () => {
   const validator = CreateValidatorLive.pipe(Layer.provide(ProbeTest));
   const runnable = Effect.provide(program(params), validator);
 
-  expect(await Effect.runPromise(runnable)).toEqual({
+  expect(await Effect.runPromise(runnable)).toStrictEqual({
     event: ProductEvent.CREATE_PRODUCT,
     product,
   });
@@ -61,11 +53,7 @@ test('validates create product params', async () => {
 
 test('trims white space from description', async () => {
   const description = '   foo   ';
-  const product = {
-    description,
-    name: 'bar',
-    price: '9.99',
-  } satisfies Product;
+  const product = productFactory.build({ description });
   const params = new RequestParams({
     body: JSON.stringify(product),
     httpMethod: 'POST',
@@ -74,7 +62,7 @@ test('trims white space from description', async () => {
   const validator = CreateValidatorLive.pipe(Layer.provide(ProbeTest));
   const runnable = Effect.provide(program(params), validator);
 
-  expect(await Effect.runPromise(runnable)).toEqual({
+  expect(await Effect.runPromise(runnable)).toStrictEqual({
     event: ProductEvent.CREATE_PRODUCT,
     product: {
       ...product,
@@ -84,10 +72,7 @@ test('trims white space from description', async () => {
 });
 
 test('requires description', async () => {
-  const product = {
-    name: 'foo',
-    price: '9.99',
-  } satisfies Omit<Product, 'description'>;
+  const product = productFactory.build({ description: undefined });
   const params = new RequestParams({
     body: JSON.stringify(product),
     httpMethod: 'POST',
@@ -110,11 +95,7 @@ test('requires description', async () => {
 });
 
 test('enforces min length on description', async () => {
-  const product = {
-    description: '',
-    name: 'bar',
-    price: '9.99',
-  } satisfies Product;
+  const product = productFactory.build({ description: '' });
   const params = new RequestParams({
     body: JSON.stringify(product),
     httpMethod: 'POST',
@@ -138,11 +119,7 @@ test('enforces min length on description', async () => {
 
 test('enforces max length on description', async () => {
   const description = 'a'.repeat(3001);
-  const product = {
-    description,
-    name: 'bar',
-    price: '9.99',
-  } satisfies Product;
+  const product = productFactory.build({ description });
   const params = new RequestParams({
     body: JSON.stringify(product),
     httpMethod: 'POST',
@@ -166,11 +143,7 @@ test('enforces max length on description', async () => {
 
 test('trims white space from name', async () => {
   const name = '   bar   ';
-  const product = {
-    description: 'foo',
-    name,
-    price: '9.99',
-  } satisfies Product;
+  const product = productFactory.build({ name });
   const params = new RequestParams({
     body: JSON.stringify(product),
     httpMethod: 'POST',
@@ -179,7 +152,7 @@ test('trims white space from name', async () => {
   const validator = CreateValidatorLive.pipe(Layer.provide(ProbeTest));
   const runnable = Effect.provide(program(params), validator);
 
-  expect(await Effect.runPromise(runnable)).toEqual({
+  expect(await Effect.runPromise(runnable)).toStrictEqual({
     event: ProductEvent.CREATE_PRODUCT,
     product: {
       ...product,
@@ -189,10 +162,7 @@ test('trims white space from name', async () => {
 });
 
 test('requires name', async () => {
-  const product = {
-    description: 'foo',
-    price: '9.99',
-  } satisfies Omit<Product, 'name'>;
+  const product = productFactory.build({ name: undefined });
   const params = new RequestParams({
     body: JSON.stringify(product),
     httpMethod: 'POST',
@@ -215,11 +185,7 @@ test('requires name', async () => {
 });
 
 test('enforces min length on name', async () => {
-  const product = {
-    description: 'foo',
-    name: '',
-    price: '9.99',
-  } satisfies Product;
+  const product = productFactory.build({ name: '' });
   const params = new RequestParams({
     body: JSON.stringify(product),
     httpMethod: 'POST',
@@ -243,11 +209,7 @@ test('enforces min length on name', async () => {
 
 test('enforces max length on name', async () => {
   const name = 'a'.repeat(101);
-  const product = {
-    description: 'foo',
-    name,
-    price: '9.99',
-  } satisfies Product;
+  const product = productFactory.build({ name });
   const params = new RequestParams({
     body: JSON.stringify(product),
     httpMethod: 'POST',
@@ -271,11 +233,7 @@ test('enforces max length on name', async () => {
 
 test('trims white space from price', async () => {
   const price = '   9.99   ';
-  const product = {
-    description: 'foo',
-    name: 'bar',
-    price: '9.99',
-  } satisfies Product;
+  const product = productFactory.build({ price });
   const params = new RequestParams({
     body: JSON.stringify(product),
     httpMethod: 'POST',
@@ -284,7 +242,7 @@ test('trims white space from price', async () => {
   const validator = CreateValidatorLive.pipe(Layer.provide(ProbeTest));
   const runnable = Effect.provide(program(params), validator);
 
-  expect(await Effect.runPromise(runnable)).toEqual({
+  expect(await Effect.runPromise(runnable)).toStrictEqual({
     event: ProductEvent.CREATE_PRODUCT,
     product: {
       ...product,
@@ -294,10 +252,7 @@ test('trims white space from price', async () => {
 });
 
 test('requires price', async () => {
-  const product = {
-    description: 'foo',
-    name: 'bar',
-  } satisfies Omit<Product, 'price'>;
+  const product = productFactory.build({ price: undefined });
   const params = new RequestParams({
     body: JSON.stringify(product),
     httpMethod: 'POST',
@@ -321,11 +276,7 @@ test('requires price', async () => {
 
 test('enforces dollar amount on price', async () => {
   const price = '100000.99';
-  const product = {
-    description: 'foo',
-    name: 'bar',
-    price,
-  } satisfies Product;
+  const product = productFactory.build({ price });
   const params = new RequestParams({
     body: JSON.stringify(product),
     httpMethod: 'POST',
@@ -349,11 +300,7 @@ test('enforces dollar amount on price', async () => {
 
 test('enforces fractional amount on price', async () => {
   const price = '9.990';
-  const product = {
-    description: 'foo',
-    name: 'bar',
-    price,
-  } satisfies Product;
+  const product = productFactory.build({ price });
   const params = new RequestParams({
     body: JSON.stringify(product),
     httpMethod: 'POST',

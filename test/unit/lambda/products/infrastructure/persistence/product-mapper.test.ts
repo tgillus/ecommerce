@@ -28,7 +28,7 @@ test('maps products to dynamo item', () => {
   });
   const runnable = program.pipe(Effect.provide(ProductMapperLive));
 
-  expect(Effect.runSync(runnable)).toEqual({
+  expect(Effect.runSync(runnable)).toStrictEqual({
     PK: `PRODUCT#${id}`,
     SK: `PRODUCT#${createdAt.toISOString()}`,
     CreatedAt: createdAt.toISOString(),

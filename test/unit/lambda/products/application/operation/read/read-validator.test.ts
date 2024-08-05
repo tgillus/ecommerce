@@ -28,7 +28,7 @@ test('builds a create validator', async () => {
     Effect.provide(ProbeTest)
   );
 
-  expect(await Effect.runPromise(runnable)).toEqual({
+  expect(await Effect.runPromise(runnable)).toStrictEqual({
     event: ProductEvent.READ_PRODUCT,
     productId,
   });
@@ -44,7 +44,7 @@ test('validates read product params', async () => {
   const validator = ReadValidatorLive.pipe(Layer.provide(ProbeTest));
   const runnable = Effect.provide(program(params), validator);
 
-  expect(await Effect.runPromise(runnable)).toEqual({
+  expect(await Effect.runPromise(runnable)).toStrictEqual({
     event: ProductEvent.READ_PRODUCT,
     productId,
   });
