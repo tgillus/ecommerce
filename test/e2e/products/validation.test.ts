@@ -1,9 +1,7 @@
 import { spec } from 'pactum';
-import { describe, inject, test } from 'vitest';
+import { describe, test } from 'vitest';
 import { productFactory } from '../../factories/product-factory.js';
-
-const accessToken = inject('accessToken');
-const requestId = /^[A-Za-z0-9_-]+$/;
+import { accessToken, requestId } from '../fixture.js';
 
 describe('POST /products', () => {
   test('requires an access token', async () => {
