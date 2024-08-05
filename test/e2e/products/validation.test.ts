@@ -3,11 +3,6 @@ import { describe, inject, test } from 'vitest';
 import { productFactory } from '../../factories/product-factory.js';
 
 const accessToken = inject('accessToken');
-// const apiBaseUrl = inject('apiBaseUrl');
-
-// request.setBaseUrl(apiBaseUrl);
-// request.setDefaultTimeout(10000);
-
 const requestId = /^[A-Za-z0-9_-]+$/;
 
 describe('POST /products', () => {
