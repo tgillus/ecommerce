@@ -7,5 +7,6 @@ export default defineConfig({
       exclude: ['lib/**/vendor/**'],
     },
     globalSetup: './test/e2e/global-setup.ts',
+    setupFiles: ['./test/e2e/pactum-setup.ts'],
   },
 });
