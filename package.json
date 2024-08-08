@@ -5,9 +5,9 @@
   "description": "An e-commerce project used to explore event-based APIs and microservices.",
   "dependencies": {
     "@aws-sdk/client-api-gateway": "3.624.0",
-    "@aws-sdk/client-cognito-identity-provider": "3.625.0",
+    "@aws-sdk/client-cognito-identity-provider": "3.627.0",
     "@aws-sdk/client-dynamodb": "3.624.0",
-    "@aws-sdk/client-s3": "3.624.0",
+    "@aws-sdk/client-s3": "3.627.0",
     "@aws-sdk/lib-dynamodb": "3.624.0",
     "@effect/schema": "0.70.2",
     "@sindresorhus/is": "7.0.0",
@@ -15,7 +15,7 @@
     "constructs": "10.3.0",
     "effect": "3.6.1",
     "envalid": "8.0.0",
-    "fast-check": "3.20.0",
+    "fast-check": "3.21.0",
     "nanoid": "5.0.7",
     "openid-client": "5.6.5",
     "pkg-dir": "8.0.0",
@@ -23,7 +23,7 @@
   },
   "devDependencies": {
     "@biomejs/biome": "1.8.3",
-    "@commitlint/cli": "19.3.0",
+    "@commitlint/cli": "19.4.0",
     "@commitlint/config-conventional": "19.2.2",
     "@faker-js/faker": "8.4.1",
     "@release-it/conventional-changelog": "8.0.1",
@@ -40,7 +40,7 @@
     "pactum": "3.7.1",
     "release-it": "17.6.0",
     "testdouble": "3.20.2",
-    "tsx": "4.16.5",
+    "tsx": "4.17.0",
     "typescript": "5.5.4",
     "vitest": "2.0.5"
   },
