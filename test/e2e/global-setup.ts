@@ -15,20 +15,24 @@ export default async function setup({ provide }: GlobalSetupContext) {
       },
     },
   } = new Config();
-  const cogGateway = CognitoGateway.build();
 
   const accessToken = await Effect.runPromise(
     Effect.gen(function* () {
+      const cognitoGateway = yield* CognitoGateway;
       const oauthGateway = yield* OAuthGateway;
+
       const { clientId, clientSecret, userPoolId } =
-        yield* cogGateway.credentials(userPoolName, testUserPoolClientName);
+        yield* cognitoGateway.credentials(userPoolName, testUserPoolClientName);
 
       return yield* oauthGateway.accessToken(
         `https://${issuerHostname}/${userPoolId}`,
         clientId,
         clientSecret
       );
-    }).pipe(Effect.provide(OAuthGateway.build()))
+    }).pipe(
+      Effect.provide(OAuthGateway.build()),
+      Effect.provide(CognitoGateway.build())
+    )
   );
 
   const apiId = await Effect.runPromise(

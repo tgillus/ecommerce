@@ -1,56 +1,68 @@
-import { Effect, Exit } from 'effect';
+import { Effect, Exit, Layer } from 'effect';
 import { NoSuchElementException } from 'effect/Cause';
 import * as td from 'testdouble';
-import { afterEach, expect, test } from 'vitest';
-import { CognitoGateway } from '../../../../lib/infrastructure/cognito/cognito-gateway.js';
-import type { Client } from '../../../../lib/vendor/aws/cognito/client.js';
+import { afterEach, beforeEach, expect, test } from 'vitest';
+import {
+  CognitoGateway,
+  CognitoGatewayLive,
+} from '../../../../lib/infrastructure/cognito/cognito-gateway.js';
+import {
+  CognitoClient,
+  CognitoClientClientIdFailureTest,
+  CognitoClientClientSecretFailureTest,
+  CognitoClientSuccessTest,
+  CognitoClientUserPoolIdFailureTest,
+} from '../../../../lib/vendor/aws/cognito/cognito-client.js';
 
-const userPoolName = 'foo';
-const userPoolClientName = 'bar';
-const client = td.object<Client>();
-const cognitoGateway = new CognitoGateway(client);
+const userPoolName = 'qux';
+const userPoolClientName = 'quux';
+
+const program = Effect.gen(function* () {
+  const cognitoGateway = yield* CognitoGateway;
+  return yield* cognitoGateway.credentials(userPoolName, userPoolClientName);
+});
+
+beforeEach(() => {
+  td.replace(CognitoClient, 'build');
+});
 
 afterEach(() => {
   td.reset();
 });
 
+test('builds an cognito gateway', async () => {
+  td.when(CognitoClient.build()).thenReturn(CognitoClientSuccessTest);
+  const runnable = program.pipe(Effect.provide(CognitoGateway.build()));
+
+  expect(await Effect.runPromise(runnable)).toStrictEqual({
+    clientId: 'bar',
+    clientSecret: 'baz',
+    userPoolId: 'foo',
+  });
+});
+
 test('retrieves credentials', async () => {
-  const userPoolId = 'baz';
-  const clientId = 'qux';
-  const clientSecret = 'quux';
-  td.when(client.userPool(userPoolName)).thenReturn(
-    Effect.succeed({
-      Id: userPoolId,
-    })
-  );
-  td.when(client.userPoolClient(userPoolId, userPoolClientName)).thenReturn(
-    Effect.succeed({
-      ClientId: clientId,
-    })
-  );
-  td.when(client.describePoolClient(clientId, userPoolId)).thenReturn(
-    Effect.succeed({
-      ClientSecret: clientSecret,
-    })
-  );
-  expect(
-    await Effect.runPromise(
-      cognitoGateway.credentials(userPoolName, userPoolClientName)
+  const runnable = program.pipe(
+    Effect.provide(
+      CognitoGatewayLive.pipe(Layer.provide(CognitoClientSuccessTest))
     )
-  ).toStrictEqual({
-    clientId,
-    clientSecret,
-    userPoolId,
+  );
+
+  expect(await Effect.runPromise(runnable)).toStrictEqual({
+    clientId: 'bar',
+    clientSecret: 'baz',
+    userPoolId: 'foo',
   });
 });
 
 test('returns error when user pool id not returned', async () => {
-  td.when(client.userPool(userPoolName)).thenReturn(Effect.succeed({}));
-  expect(
-    await Effect.runPromiseExit(
-      cognitoGateway.credentials(userPoolName, userPoolClientName)
+  const runnable = program.pipe(
+    Effect.provide(
+      CognitoGatewayLive.pipe(Layer.provide(CognitoClientUserPoolIdFailureTest))
     )
-  ).toStrictEqual(
+  );
+
+  expect(await Effect.runPromiseExit(runnable)).toStrictEqual(
     Exit.fail(
       new NoSuchElementException(`user pool id for ${userPoolName} not found`)
     )
@@ -58,20 +70,13 @@ test('returns error when user pool id not returned', async () => {
 });
 
 test('returns error when client id not returned', async () => {
-  const userPoolId = 'baz';
-  td.when(client.userPool(userPoolName)).thenReturn(
-    Effect.succeed({
-      Id: userPoolId,
-    })
-  );
-  td.when(client.userPoolClient(userPoolId, userPoolClientName)).thenReturn(
-    Effect.succeed({})
-  );
-  expect(
-    await Effect.runPromiseExit(
-      cognitoGateway.credentials(userPoolName, userPoolClientName)
+  const runnable = program.pipe(
+    Effect.provide(
+      CognitoGatewayLive.pipe(Layer.provide(CognitoClientClientIdFailureTest))
     )
-  ).toStrictEqual(
+  );
+
+  expect(await Effect.runPromiseExit(runnable)).toStrictEqual(
     Exit.fail(
       new NoSuchElementException(
         `client id for ${userPoolClientName} not found`
@@ -81,34 +86,19 @@ test('returns error when client id not returned', async () => {
 });
 
 test('returns error when client secret not returned', async () => {
-  const userPoolId = 'baz';
-  const clientId = 'qux';
-  td.when(client.userPool(userPoolName)).thenReturn(
-    Effect.succeed({
-      Id: userPoolId,
-    })
-  );
-  td.when(client.userPoolClient(userPoolId, userPoolClientName)).thenReturn(
-    Effect.succeed({
-      ClientId: clientId,
-    })
-  );
-  td.when(client.describePoolClient(clientId, userPoolId)).thenReturn(
-    Effect.succeed({})
-  );
-  expect(
-    await Effect.runPromiseExit(
-      cognitoGateway.credentials(userPoolName, userPoolClientName)
+  const runnable = program.pipe(
+    Effect.provide(
+      CognitoGatewayLive.pipe(
+        Layer.provide(CognitoClientClientSecretFailureTest)
+      )
     )
-  ).toStrictEqual(
+  );
+
+  expect(await Effect.runPromiseExit(runnable)).toStrictEqual(
     Exit.fail(
       new NoSuchElementException(
         `client secret for ${userPoolClientName} not found`
       )
     )
   );
-});
-
-test('builds an cognito gateway', () => {
-  expect(CognitoGateway.build()).toBeInstanceOf(CognitoGateway);
 });

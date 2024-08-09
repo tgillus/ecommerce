@@ -2,14 +2,46 @@ import {
   CognitoIdentityProviderClient,
   DescribeUserPoolClientCommand,
   type UserPoolClientDescription,
+  type UserPoolClientType,
   type UserPoolDescriptionType,
   paginateListUserPoolClients,
   paginateListUserPools,
 } from '@aws-sdk/client-cognito-identity-provider';
-import { Array as Arr, Effect, Match, Stream } from 'effect';
+import { Array as Arr, Context, Effect, Layer, Match, Stream } from 'effect';
 import { NoSuchElementException, UnknownException } from 'effect/Cause';
 
-export class Client {
+// biome-ignore lint/complexity/noStaticOnlyClass: <explanation>
+export class CognitoClient extends Context.Tag('CognitoClient')<
+  CognitoClient,
+  {
+    userPool(
+      userPoolName: string
+    ): Effect.Effect<
+      UserPoolDescriptionType,
+      NoSuchElementException | UnknownException
+    >;
+    userPoolClient(
+      userPoolId: string,
+      clientName: string
+    ): Effect.Effect<
+      UserPoolClientDescription,
+      NoSuchElementException | UnknownException
+    >;
+    describePoolClient(
+      clientId: string,
+      userPoolId: string
+    ): Effect.Effect<
+      UserPoolClientType,
+      NoSuchElementException | UnknownException
+    >;
+  }
+>() {
+  static build() {
+    return CognitoClientLive;
+  }
+}
+
+class Client {
   constructor(private readonly client: CognitoIdentityProviderClient) {}
 
   userPool(userPoolName: string) {
@@ -116,8 +148,65 @@ export class Client {
       )
     );
   }
-
-  static build() {
-    return new Client(new CognitoIdentityProviderClient());
-  }
 }
+
+export const CognitoClientLive = Layer.succeed(
+  CognitoClient,
+  new Client(new CognitoIdentityProviderClient())
+);
+
+export const CognitoClientSuccessTest = Layer.succeed(CognitoClient, {
+  userPool: (_userPoolName: string) =>
+    Effect.succeed({
+      Id: 'foo',
+    }),
+  userPoolClient: (_userPoolId: string, _clientName: string) =>
+    Effect.succeed({
+      ClientId: 'bar',
+    }),
+  describePoolClient: (_clientId: string, _userPoolId: string) =>
+    Effect.succeed({
+      ClientSecret: 'baz',
+    }),
+});
+
+export const CognitoClientUserPoolIdFailureTest = Layer.succeed(CognitoClient, {
+  userPool: (_userPoolName: string) => Effect.succeed({}),
+  userPoolClient: (_userPoolId: string, _clientName: string) =>
+    Effect.succeed({
+      ClientId: 'bar',
+    }),
+  describePoolClient: (_clientId: string, _userPoolId: string) =>
+    Effect.succeed({
+      ClientSecret: 'baz',
+    }),
+});
+
+export const CognitoClientClientIdFailureTest = Layer.succeed(CognitoClient, {
+  userPool: (_userPoolName: string) =>
+    Effect.succeed({
+      Id: 'foo',
+    }),
+  userPoolClient: (_userPoolId: string, _clientName: string) =>
+    Effect.succeed({}),
+  describePoolClient: (_clientId: string, _userPoolId: string) =>
+    Effect.succeed({
+      ClientSecret: 'baz',
+    }),
+});
+
+export const CognitoClientClientSecretFailureTest = Layer.succeed(
+  CognitoClient,
+  {
+    userPool: (_userPoolName: string) =>
+      Effect.succeed({
+        Id: 'foo',
+      }),
+    userPoolClient: (_userPoolId: string, _clientName: string) =>
+      Effect.succeed({
+        ClientId: 'bar',
+      }),
+    describePoolClient: (_clientId: string, _userPoolId: string) =>
+      Effect.succeed({}),
+  }
+);
