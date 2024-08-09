@@ -37,7 +37,3 @@ export const OAuthGatewayLive = Layer.effect(
     };
   })
 );
-
-export const OAuthGatewayTest = Layer.succeed(OAuthGateway, {
-  accessToken: (_issuer, _clientId, _clientSecret) => Effect.succeed('foo'),
-});
