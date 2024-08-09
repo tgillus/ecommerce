@@ -15,38 +15,33 @@ export default async function setup({ provide }: GlobalSetupContext) {
       },
     },
   } = new Config();
+  const program = Effect.gen(function* () {
+    const cognitoGateway = yield* CognitoGateway;
+    const oauthGateway = yield* OAuthGateway;
+    const apiGateway = yield* ApiGateway;
 
-  const accessToken = await Effect.runPromise(
-    Effect.gen(function* () {
-      const cognitoGateway = yield* CognitoGateway;
-      const oauthGateway = yield* OAuthGateway;
+    const { clientId, clientSecret, userPoolId } =
+      yield* cognitoGateway.credentials(userPoolName, testUserPoolClientName);
+    const accessToken = yield* oauthGateway.accessToken(
+      `https://${issuerHostname}/${userPoolId}`,
+      clientId,
+      clientSecret
+    );
+    const apiId = yield* apiGateway.apiId(apiName);
 
-      const { clientId, clientSecret, userPoolId } =
-        yield* cognitoGateway.credentials(userPoolName, testUserPoolClientName);
+    provide('accessToken', accessToken);
+    provide(
+      'apiBaseUrl',
+      `https://${apiId}.execute-api.${region}.amazonaws.com/prod`
+    );
+  });
 
-      return yield* oauthGateway.accessToken(
-        `https://${issuerHostname}/${userPoolId}`,
-        clientId,
-        clientSecret
-      );
-    }).pipe(
+  await Effect.runPromise(
+    program.pipe(
       Effect.provide(OAuthGateway.build()),
-      Effect.provide(CognitoGateway.build())
+      Effect.provide(CognitoGateway.build()),
+      Effect.provide(ApiGateway.build())
     )
-  );
-
-  const apiId = await Effect.runPromise(
-    Effect.gen(function* () {
-      const apiGateway = yield* ApiGateway;
-
-      return yield* apiGateway.apiId(apiName);
-    }).pipe(Effect.provide(ApiGateway.build()))
-  );
-
-  provide('accessToken', accessToken);
-  provide(
-    'apiBaseUrl',
-    `https://${apiId}.execute-api.${region}.amazonaws.com/prod`
   );
 }
 
