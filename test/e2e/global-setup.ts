@@ -16,8 +16,6 @@ export default async function setup({ provide }: GlobalSetupContext) {
     },
   } = new Config();
   const cogGateway = CognitoGateway.build();
-  const oauthGateway = OAuthGateway.build();
-  const apiGateway = ApiGateway.build();
 
   const accessToken = await Effect.runPromise(
     Effect.gen(function* () {
@@ -30,10 +28,16 @@ export default async function setup({ provide }: GlobalSetupContext) {
         clientId,
         clientSecret
       );
-    }).pipe(Effect.provide(oauthGateway))
+    }).pipe(Effect.provide(OAuthGateway.build()))
   );
 
-  const apiId = await Effect.runPromise(apiGateway.apiId(apiName));
+  const apiId = await Effect.runPromise(
+    Effect.gen(function* () {
+      const apiGateway = yield* ApiGateway;
+
+      return yield* apiGateway.apiId(apiName);
+    }).pipe(Effect.provide(ApiGateway.build()))
+  );
 
   provide('accessToken', accessToken);
   provide(

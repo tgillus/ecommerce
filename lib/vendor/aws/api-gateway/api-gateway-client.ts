@@ -3,10 +3,24 @@ import {
   type RestApi,
   paginateGetRestApis,
 } from '@aws-sdk/client-api-gateway';
-import { Array as Arr, Effect, Match, Stream } from 'effect';
+import { Array as Arr, Context, Effect, Layer, Match, Stream } from 'effect';
 import { NoSuchElementException, UnknownException } from 'effect/Cause';
 
-export class Client {
+// biome-ignore lint/complexity/noStaticOnlyClass: <explanation>
+export class ApiGatewayClient extends Context.Tag('ApiGatewayClient')<
+  ApiGatewayClient,
+  {
+    restApi(
+      restApiame: string
+    ): Effect.Effect<RestApi, NoSuchElementException | UnknownException>;
+  }
+>() {
+  static build() {
+    return ApiGatewayClientLive;
+  }
+}
+
+class Client {
   constructor(private readonly client: APIGatewayClient) {}
 
   restApi(restApiName: string) {
@@ -45,8 +59,20 @@ export class Client {
       )
     );
   }
-
-  static build() {
-    return new Client(new APIGatewayClient());
-  }
 }
+
+export const ApiGatewayClientLive = Layer.succeed(
+  ApiGatewayClient,
+  new Client(new APIGatewayClient())
+);
+
+export const ApiGatewayClientSuccessTest = Layer.succeed(ApiGatewayClient, {
+  restApi: (_restApiName: string) =>
+    Effect.succeed({
+      id: 'foo',
+    }),
+});
+
+export const ApiGatewayClientFailureTest = Layer.succeed(ApiGatewayClient, {
+  restApi: (_restApiName: string) => Effect.succeed({}),
+});
