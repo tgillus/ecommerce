@@ -80,7 +80,7 @@ export class Client {
       (e) => new UnknownException(e)
     ).pipe(
       Stream.runFold(
-        [] as UserPoolDescriptionType[],
+        new Array<UserPoolDescriptionType>(),
         (allUserPools, { UserPools }) =>
           Match.value(UserPools).pipe(
             Match.when(Match.undefined, () => allUserPools),
@@ -104,12 +104,12 @@ export class Client {
       (e) => new UnknownException(e)
     ).pipe(
       Stream.runFold(
-        [] as UserPoolClientDescription[],
-        (allUserPoolClientss, { UserPoolClients }) =>
+        new Array<UserPoolClientDescription>(),
+        (allUserPoolClients, { UserPoolClients }) =>
           Match.value(UserPoolClients).pipe(
-            Match.when(Match.undefined, () => allUserPoolClientss),
+            Match.when(Match.undefined, () => allUserPoolClients),
             Match.orElse((userPoolClients) => [
-              ...allUserPoolClientss,
+              ...allUserPoolClients,
               ...userPoolClients,
             ])
           )

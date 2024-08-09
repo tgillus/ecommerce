@@ -7,10 +7,11 @@ import { ReadValidator } from './read-validator.js';
 
 // biome-ignore lint/complexity/noStaticOnlyClass: <explanation>
 export class ReadOperation {
-  static build = () =>
-    ReadOperationLive.pipe(
+  static build() {
+    return ReadOperationLive.pipe(
       Layer.provide(Layer.merge(ReadValidator.build(), ReadHandler.build()))
     );
+  }
 }
 
 export const ReadOperationLive = Layer.effect(

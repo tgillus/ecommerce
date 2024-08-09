@@ -37,7 +37,7 @@ export class Client {
       ),
       (e) => new UnknownException(e)
     ).pipe(
-      Stream.runFold([] as RestApi[], (allRestApis, { items }) =>
+      Stream.runFold(new Array<RestApi>(), (allRestApis, { items }) =>
         Match.value(items).pipe(
           Match.when(Match.undefined, () => allRestApis),
           Match.orElse((restApis) => [...allRestApis, ...restApis])

@@ -7,10 +7,11 @@ import { CreateValidator } from './create-validator.js';
 
 // biome-ignore lint/complexity/noStaticOnlyClass: <explanation>
 export class CreateOperation {
-  static build = () =>
-    CreateOperationLive.pipe(
+  static build() {
+    return CreateOperationLive.pipe(
       Layer.provide(Layer.merge(CreateValidator.build(), CreateHandler.build()))
     );
+  }
 }
 
 export const CreateOperationLive = Layer.effect(

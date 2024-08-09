@@ -20,18 +20,19 @@ export default async function setup({ provide }: GlobalSetupContext) {
   const apiGateway = ApiGateway.build();
 
   const accessToken = await Effect.runPromise(
-    cogGateway
-      .credentials(userPoolName, testUserPoolClientName)
-      .pipe(
-        Effect.andThen(({ clientId, clientSecret, userPoolId }) =>
-          oauthGateway.accessToken(
-            `https://${issuerHostname}/${userPoolId}`,
-            clientId,
-            clientSecret
-          )
-        )
-      )
+    Effect.gen(function* () {
+      const oauthGateway = yield* OAuthGateway;
+      const { clientId, clientSecret, userPoolId } =
+        yield* cogGateway.credentials(userPoolName, testUserPoolClientName);
+
+      return yield* oauthGateway.accessToken(
+        `https://${issuerHostname}/${userPoolId}`,
+        clientId,
+        clientSecret
+      );
+    }).pipe(Effect.provide(oauthGateway))
   );
+
   const apiId = await Effect.runPromise(apiGateway.apiId(apiName));
 
   provide('accessToken', accessToken);

@@ -1,21 +1,43 @@
-import { Effect } from 'effect';
-import { NoSuchElementException } from 'effect/Cause';
-import { Client } from '../../vendor/oauth/client.js';
+import { Context, Effect, Layer } from 'effect';
+import { NoSuchElementException, type UnknownException } from 'effect/Cause';
+import { OAuthClient } from '../../vendor/oauth/oauth-client.js';
 
-export class OAuthGateway {
-  constructor(private readonly client: Client) {}
-
-  accessToken(issuer: string, clientId: string, clientSecret: string) {
-    return this.client.accessToken(issuer, clientId, clientSecret).pipe(
-      Effect.andThen(({ access_token }) => Effect.fromNullable(access_token)),
-      Effect.catchTag(
-        'NoSuchElementException',
-        () => new NoSuchElementException('no access token available')
-      )
-    );
+// biome-ignore lint/complexity/noStaticOnlyClass: <explanation>
+export class OAuthGateway extends Context.Tag('OAuthGateway')<
+  OAuthGateway,
+  {
+    accessToken(
+      issuer: string,
+      clientId: string,
+      clientSecret: string
+    ): Effect.Effect<string, UnknownException | NoSuchElementException>;
   }
-
+>() {
   static build() {
-    return new OAuthGateway(new Client());
+    return OAuthGatewayLive.pipe(Layer.provide(OAuthClient.build()));
   }
 }
+
+export const OAuthGatewayLive = Layer.effect(
+  OAuthGateway,
+  Effect.gen(function* () {
+    const client = yield* OAuthClient;
+
+    return {
+      accessToken: (issuer: string, clientId: string, clientSecret: string) =>
+        client.accessToken(issuer, clientId, clientSecret).pipe(
+          Effect.andThen(({ access_token }) =>
+            Effect.fromNullable(access_token)
+          ),
+          Effect.catchTag(
+            'NoSuchElementException',
+            () => new NoSuchElementException('no access token available')
+          )
+        ),
+    };
+  })
+);
+
+export const OAuthGatewayTest = Layer.succeed(OAuthGateway, {
+  accessToken: (_issuer, _clientId, _clientSecret) => Effect.succeed('foo'),
+});
