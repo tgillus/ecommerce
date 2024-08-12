@@ -10,7 +10,9 @@ const app = new cdk.App();
 const config = new Config();
 const {
   settings: {
-    cdk: { account, region },
+    aws: {
+      cdk: { account, region },
+    },
   },
 } = config;
 const env = {

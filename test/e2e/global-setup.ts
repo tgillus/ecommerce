@@ -36,12 +36,11 @@ export default async function setup({ provide }: GlobalSetupContext) {
     );
   });
 
-  await Effect.runPromise(
-    program.pipe(
-      Effect.provide(OAuthGateway.build()),
-      Effect.provide(CognitoGateway.build()),
-      Effect.provide(ApiGateway.build())
-    )
+  await program.pipe(
+    Effect.provide(OAuthGateway.build()),
+    Effect.provide(CognitoGateway.build()),
+    Effect.provide(ApiGateway.build()),
+    Effect.runPromise
   );
 }
 

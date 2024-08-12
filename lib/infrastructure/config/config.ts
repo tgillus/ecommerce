@@ -3,7 +3,6 @@ import { env } from './env/env.js';
 interface Settings {
   readonly api: ApiSettings;
   readonly aws: AwsSettings;
-  readonly cdk: CdkSettings;
 }
 
 interface ApiSettings {
@@ -12,6 +11,7 @@ interface ApiSettings {
 
 interface AwsSettings {
   readonly apiGateway: ApiGatewaySettings;
+  readonly cdk: CdkSettings;
   readonly cognito: CognitoSettings;
 }
 
@@ -37,16 +37,16 @@ export class Config {
 
   constructor() {
     this.settings = {
-      cdk: {
-        account: env.CDK_DEFAULT_ACCOUNT,
-        region: env.CDK_DEFAULT_REGION,
-      },
       api: {
         name: env.API_NAME,
       },
       aws: {
         apiGateway: {
           region: env.AWS_API_GATEWAY_REGION,
+        },
+        cdk: {
+          account: env.CDK_DEFAULT_ACCOUNT,
+          region: env.CDK_DEFAULT_REGION,
         },
         cognito: {
           domainPrefix: env.AWS_COGNITO_DOMAIN_PREFIX,
