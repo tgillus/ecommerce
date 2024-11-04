@@ -167,7 +167,7 @@ exports[`matches the snapshot 1`] = `
           "S3Bucket": {
             "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-\${AWS::Region}",
           },
-          "S3Key": "3cde3c5b420d279115b9975faa792e8306df4c3230646d57cbd9dcac13f326ff.zip",
+          "S3Key": "02ca4c64fc8213b9a8ec4c8192f869f2afda928d951e907bb87c330896b81adc.zip",
         },
         "Environment": {
           "Variables": {
